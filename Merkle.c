@@ -1,9 +1,11 @@
 #include <openssl/sha.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "Merkle.h"
+#include "MerkleQueue.h"
 #include "Utils.h"
 
 #define HASH_SIZE (32)
@@ -18,6 +20,27 @@ typedef enum deallocation_policy {
   Dealloc = 1
 } deallocation_policy;
 
+static void free_all(void *first, ...) {
+  if (!first) {
+    return; // Nothing to free
+  }
+
+  // Free the first pointer
+  MFree(first);
+
+  // Set up variadic argument processing
+  va_list args;
+  va_start(args, first);
+
+  void *ptr;
+  // Continue freeing pointers until we hit NULL (sentinel)
+  while ((ptr = va_arg(args, void *)) != NULL) {
+    MFree(ptr);
+  }
+
+  va_end(args);
+}
+
 static deallocator get_queue_dealloc(deallocation_policy policy) {
   if (policy == Dealloc) {
     return &free;
@@ -26,50 +49,25 @@ static deallocator get_queue_dealloc(deallocation_policy policy) {
   return NULL;
 }
 
-/* auxiliry methods */
-static void *Merkle_Malloc(size_t size, const char *file, int line) {
-
-#ifdef MERKLE_DEBUG
-  printf("allocating %zu bytes in file %s line %d", size, file, line);
-#endif
-
-  void *res = calloc(1, size);
-
-#ifdef MERKLE_DEBUG
-  if (!res) {
-    printf(file, "failed allocating %zu in file %s line %d", size, file, line);
-  }
-#endif
-
-  return res;
-}
-
-static void Merkle_Free(void *d, const char *file, int line) {
-#ifdef MERKLE_DEBUG
-  printf("freeing in file %s line %d", file, line);
-#endif
-  free(d);
-}
-
 /* data types */
 typedef struct {
   unsigned char hash[HASH_SIZE];
-  struct MerkleNode *left, *right;
-} MerkleNode;
+  struct merkle_node_t *left, *right;
+} merkle_node_t;
 
 // used for merkle proof
 typedef struct {
   unsigned char hash[HASH_SIZE];
   unsigned char is_left; // 1 = sibling is on the left, 0 = on the right
-} MerkleProofItem;
+} merkle_proof_item_t;
 
-struct MerkleTree {
-  MerkleNode *root;
-  MerkleNode **leaves;
+struct merkle_tree_t {
+  merkle_node_t *root;
+  merkle_node_t **leaves;
   size_t leaf_count;
 };
 
-typedef struct queue_element {
+typedef struct queue_element_t {
   union {
     struct {
       void *d;
@@ -80,50 +78,91 @@ typedef struct queue_element {
   };
 
   int queue_element_type;
-} queue_element;
+} queue_element_t;
 
 // Private Methods
-
-static void dealloc_queue_element(void *e) {
-  queue_element *qe = e;
-
-  if (!qe || qe->queue_element_type == DELIMITER_TYPE) {
+static void dealloc_hash_node(MerkleNode *e) {
+  if (unlikely(!e)) {
     return;
   }
 
-  MFree(qe);
+  dealloc_hash_node(e->left);
+  dealloc_hash_node(e->right);
+  MFree(e);
 }
 
-static void build_tree_from_queue(queue *queue, struct MerkleTree **result) {
-  if (unlikely((!queue || !result))) {
+static void dealloc_queue_element(void *e) {
+  queue_element_t *qe = e;
+
+  if (!qe) {
     return;
   }
 
+  if (qe->queue_element_type == DATA_TYPE) {
+    free_all(qe->data.d, qe);
+    return;
+  }
+
+  dealloc_hash_node(qe->mnode);
+}
+
+static void dealloc_queue_elements(void *first, ...) {
+  if (!first) {
+    return; // Nothing to free
+  }
+
+  // Free the first pointer
+  dealloc_queue_element(first);
+
+  // Set up variadic argument processing
+  va_list args;
+  va_start(args, first);
+
+  void *ptr;
+  // Continue freeing pointers until we hit NULL (sentinel)
+  while ((ptr = va_arg(args, void *)) != NULL) {
+    dealloc_queue_element(ptr);
+  }
+
+  va_end(args);
+}
+
+static merkle_error_t build_tree_from_queue(queue *queue,
+                                            struct MerkleTree **result) {
+  if (unlikely((!queue || !result))) {
+    return E_NULL_ARG;
+  }
+
+  merkle_error_t ret_code = Success;
   *result = MMalloc(sizeof *result);
 
   while (get_queue_size(queue)) {
-    queue_element *element = front_queue(queue);
+    queue_element_t *element = front_queue(queue);
 
     pop_queue(queue, get_queue_dealloc(Dont_Dealloc));
 
     if (element->queue_element_type == DATA_TYPE) {
-      queue_element *h_el = MMalloc(sizeof *h_el);
+      queue_element_t *h_el = MMalloc(sizeof *h_el);
 
       if (unlikely(!h_el)) {
-        MFree(element);
+        dealloc_queue_elements(element);
+        ret_code = E_NULL_ARG;
         goto failure;
       }
 
       h_el->queue_element_type = HASH_TYPE;
+      h_el->mnode = MMalloc(sizeof *(h_el->mnode));
 
-      if (unlikely(hash_data_block(element->data.d, element->data.size,
-                                   &(h_el->mnode)) != Success)) {
-        MFree(h_el);
-        MFree(element);
+      ret_code = hash_data_block(element->data.d, element->data.size,
+                                 &(h_el->mnode->hash));
+
+      if (unlikely(ret_code != Success)) {
+        dealloc_queue_elements(h_el, element);
         goto failure;
       }
 
       queue_push(queue, h_el);
+
     } else {
       //{queue size > 0 && queue only has HASH_TYPES}
 
@@ -132,6 +171,40 @@ static void build_tree_from_queue(queue *queue, struct MerkleTree **result) {
 
       if (unlikely(!get_queue_size(queue))) {
         (*result)->root = element->mnode;
+      } else {
+
+        queue_element_t *next_element = front_queue(queue);
+        pop_queue(queue, get_queue_dealloc(Dont_Dealloc));
+
+        queue_element_t *combined = MMalloc(sizeof *combined);
+
+        if (unlikely(!combined)) {
+          dealloc_queue_elements(element, next_element);
+          ret_code = E_BAD_LEN;
+          goto failure;
+        }
+
+        combined->queue_element_type = HASH_TYPE;
+        combined->mnode = MMalloc(sizeof *(combined->mnode));
+
+        unsigned char out_hash[HASH_SIZE];
+
+        ret_code =
+            hash_two_nodes(element->mnode, next_element->mnode, &(out_hash[0]));
+
+        if (ret_code != Success) {
+          dealloc_queue_elements(element, next_element, combined);
+          goto failure;
+        }
+
+        memcpy(&(combined->mnode->hash[0]), &(out_hash[0]), HASH_SIZE);
+        combined->mnode->left = element->mnode;
+        combined->mnode->right = next_element->mnode;
+
+        // clean up the queue nodes
+        element->mnode = next_element->mnode = NULL;
+        dealloc_queue_elements(element, next_element);
+        push_queue(queue, combined);
       }
     }
   }
@@ -139,12 +212,14 @@ static void build_tree_from_queue(queue *queue, struct MerkleTree **result) {
   goto success;
 
 failure:
+  MFree(result);
 
 success:
+  return ret_code;
 }
 
-static M_Error hash_data_block(const void *data, size_t size,
-                               unsigned char out[HASH_SIZE]) {
+static merkle_error_t hash_data_block(const void *data, size_t size,
+                                      unsigned char out[HASH_SIZE]) {
   if (unlikely((!data || !out))) {
     return E_NULL_ARG;
   }
@@ -157,10 +232,22 @@ static M_Error hash_data_block(const void *data, size_t size,
   return Success;
 }
 
-struct MerkleTree *merkle_tree_create(const void **data, const size_t *size,
-                                      unsigned int count) {
-  struct MerkleTree *res = NULL;
-  queue_element delimiter = {.queue_element_type = DELIMITER_TYPE};
+static merkle_error_t hash_two_nodes(MerkleNode *n1, MerkleNode *n2,
+                                     unsigned char **out) {
+  if (unlikely(!n1 || !n2 || !out || *out)) {
+    return E_NULL_ARG;
+  }
+
+  unsigned char combined_hash[HASH_SIZE * 2] = {0};
+  memcpy(&(combined_hash[0]), &(n1->hash[0]), HASH_SIZE);
+  memcpy(&(combined_hash[HASH_SIZE]), &(n2->hash[0]), HASH_SIZE);
+
+  return hash_data_block(&(combined_hash[0]), HASH_SIZE * 2, *out);
+}
+
+struct merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
+                                         unsigned int count) {
+  struct merkle_tree_t *res = NULL;
 
   if (unlikely(!(data && *data && size && *size > 0 && count > 0))) {
     return NULL;
@@ -173,7 +260,7 @@ struct MerkleTree *merkle_tree_create(const void **data, const size_t *size,
       goto cleanup;
     }
 
-    queue_element *element = MMalloc(sizeof *element);
+    queue_element_t *element = MMalloc(sizeof *element);
 
     if (unlikely(!element)) {
       goto cleanup;
@@ -187,7 +274,7 @@ struct MerkleTree *merkle_tree_create(const void **data, const size_t *size,
 
   // for odd queue size we should duplicate the last element
   if (get_queue_size(queue) % 2) {
-    queue_element *element = MMalloc(sizeof *element);
+    queue_element_t *element = MMalloc(sizeof *element);
 
     if (unlikely(!element)) {
       goto cleanup;
