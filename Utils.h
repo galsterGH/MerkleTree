@@ -5,7 +5,7 @@
  * structures and operations. It is designed to be a general-purpose utility
  * library that can be extended to include additional functionality as needed.
  *
- * Author: [Your Name]
+ * Author: Guy Alster
  * Date: May 22, 2025
  */
 

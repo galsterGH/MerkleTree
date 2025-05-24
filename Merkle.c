@@ -13,8 +13,6 @@
 #define HASH_TYPE (2)
 #define DELIMITER_TYPE (3)
 
-typedef struct queue queue;
-
 typedef enum deallocation_policy {
   Dont_Dealloc = 0,
   Dealloc = 1
@@ -50,22 +48,22 @@ static deallocator get_queue_dealloc(deallocation_policy policy) {
 }
 
 /* data types */
-typedef struct {
+typedef struct merkle_node {
   unsigned char hash[HASH_SIZE];
-  struct merkle_node_t *left, *right;
+  struct merkle_node *left, *right;
 } merkle_node_t;
 
 // used for merkle proof
-typedef struct {
+typedef struct merkle_proof_item {
   unsigned char hash[HASH_SIZE];
   unsigned char is_left; // 1 = sibling is on the left, 0 = on the right
 } merkle_proof_item_t;
 
-struct merkle_tree_t {
+typedef struct merkle_tree {
   merkle_node_t *root;
   merkle_node_t **leaves;
   size_t leaf_count;
-};
+} merkle_tree_t;
 
 typedef struct queue_element_t {
   union {
@@ -74,14 +72,14 @@ typedef struct queue_element_t {
       size_t size;
     } data;
 
-    MerkleNode *mnode;
+    merkle_node_t *mnode;
   };
 
   int queue_element_type;
 } queue_element_t;
 
 // Private Methods
-static void dealloc_hash_node(MerkleNode *e) {
+static void dealloc_hash_node(merkle_node_t *e) {
   if (unlikely(!e)) {
     return;
   }
@@ -127,8 +125,8 @@ static void dealloc_queue_elements(void *first, ...) {
   va_end(args);
 }
 
-static merkle_error_t build_tree_from_queue(queue *queue,
-                                            struct MerkleTree **result) {
+static merkle_error_t build_tree_from_queue(queue_t *queue,
+                                            merkle_tree_t **result) {
   if (unlikely((!queue || !result))) {
     return E_NULL_ARG;
   }
@@ -139,7 +137,7 @@ static merkle_error_t build_tree_from_queue(queue *queue,
   while (get_queue_size(queue)) {
     queue_element_t *element = front_queue(queue);
 
-    pop_queue(queue, get_queue_dealloc(Dont_Dealloc));
+    pop_queue(queue);
 
     if (element->queue_element_type == DATA_TYPE) {
       queue_element_t *h_el = MMalloc(sizeof *h_el);
@@ -229,10 +227,10 @@ static merkle_error_t hash_data_block(const void *data, size_t size,
   }
 
   SHA256((const unsigned char *)data, size, out);
-  return Success;
+  s return Success;
 }
 
-static merkle_error_t hash_two_nodes(MerkleNode *n1, MerkleNode *n2,
+static merkle_error_t hash_two_nodes(merkle_node_t *n1, merkle_node_t *n2,
                                      unsigned char **out) {
   if (unlikely(!n1 || !n2 || !out || *out)) {
     return E_NULL_ARG;
@@ -253,7 +251,7 @@ struct merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
     return NULL;
   }
 
-  queue *queue = init_queue();
+  queue_t *queue = init_queue();
 
   for (int i = 0; i < count; ++i) {
     if (!data[i] || !size[i]) {

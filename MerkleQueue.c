@@ -1,9 +1,10 @@
 /*
  * MerkleQueue.c
  *
- * This file contains the implementation of a queue data structure specifically
- * designed for use in the Merkle tree construction process. It includes
- * functions for initialization, memory management, and basic queue operations.
+ * This file contains the implementation of a queue_t data structure
+ * specifically designed for use in the Merkle tree construction process. It
+ * includes functions for initialization, memory management, and basic queue_t
+ * operations.
  *
  * Author: [Your Name]
  * Date: May 24, 2025
@@ -22,36 +23,33 @@ typedef struct queue {
   queue_node *head;
   queue_node *tail;
   size_t queue_size;
-} queue;
+} queue_t;
 
-// { true }
-// Initializes a new queue with a sentinel node and returns a pointer to it.
-queue *init_queue() {
-  queue_node *sent_node = calloc(1, sizeof *sent_node);
-  queue *q = NULL;
+// Initializes a new queue_t with a sentinel node and returns a pointer to it.
+queue_t *init_queue() {
+  queue_node *sent_node = MMalloc(sizeof *sent_node);
+  queue_t *q = NULL;
 
-  if (unlikely(!sent_node)) {
+  if (!sent_node) {
     return NULL;
   }
 
-  q = calloc(1, sizeof *q);
+  q = MMalloc(sizeof *q);
 
-  if (unlikely(!q)) {
-    free(sent_node); // Fix memory leak
+  if (!q) {
+    MFree(sent_node); // Fix memory leak
     return NULL;
   }
 
   q->head = q->tail = sent_node;
   return q;
-  // { q != NULL && q->head == q->tail && q->queue_size == 0 }
 }
 
-// { q != NULL }
 // Frees all memory associated with the queue, including its nodes and their
 // values.
-void free_queue(queue *q, deallocator dealloc) {
+void free_queue(queue_t *q, deallocator dealloc) {
 
-  if (unlikely(!q)) {
+  if (!q) {
     return;
   }
 
@@ -65,75 +63,59 @@ void free_queue(queue *q, deallocator dealloc) {
       dealloc(d->value);
     }
 
-    free(d);
+    MFree(d);
     d = next;
   }
-  free(head);
-  free(q);
-  // { q and all its nodes are deallocated }
+
+  MFree(head);
+  MFree(q);
 }
 
-// { q != NULL }
 // Adds a new element to the end of the queue.
-void push_queue(queue *q, void *data) {
+queue_result_t push_queue(queue_t *q, void *data) {
 
-  if (unlikely(!q)) {
-    return;
+  if (!q) {
+    return QUEUE_NULL_PTR;
   }
 
-  queue_node *ins = calloc(1, sizeof *ins);
+  queue_node *ins = MMalloc(sizeof *ins);
 
-  if (unlikely(!ins)) {
-    return;
+  if (!ins) {
+    return QUEUE_OUT_OF_MEMORY;
   }
 
+  ins->next = NULL;
   ins->value = data;
 
-  //{q->tail == q->head || q->tail != q->head}
   q->tail->next = ins;
   q->tail = ins;
   q->queue_size++;
-  // { q->queue_size is incremented by 1 and data is added to the tail }
+  return QUEUE_OK;
 }
 
-// { q != NULL && q->queue_size > 0 }
 // Removes the front element from the queue and returns its value.
-void *pop_queue(struct queue *q, deallocator dealloc) {
-  if (unlikely(!q)) {
-    return NULL;
-  }
-
-  if (q->tail == q->head) {
+void *pop_queue(queue_t *q) {
+  if (!q || q->tail == q->head) {
     return NULL;
   }
 
   void *result = q->head->next->value;
+  queue_node *to_free = q->head->next;
 
-  // invariant: q has at least one elements after the sentinel
-  queue_node *temp = q->head->next->next;
-
-  if (dealloc) {
-    dealloc(q->head->next->value);
-  }
-
-  free(q->head->next);
-  q->head->next = temp;
-
-  if (!temp) {
+  q->head->next = to_free->next;
+  if (!to_free->next) {
     q->tail = q->head;
   }
 
+  MFree(to_free); // Only free the node, not the data
   q->queue_size--;
   return result;
-  // { q->queue_size is decremented by 1 and the front element is removed and
-  // the value returned }
 }
 
-// { q != NULL }
 // Returns the value of the front element in the queue without removing it.
-void *front_queue(queue *q) {
+void *front_queue(queue_t *q) {
 
-  if (unlikely(!q)) {
+  if (!q) {
     return NULL;
   }
 
@@ -142,14 +124,12 @@ void *front_queue(queue *q) {
   }
 
   return q->head->next->value;
-  // { returns the value of the front element or NULL if the queue is empty }
 }
 
-// { q != NULL }
 // Returns the value of the last element in the queue without removing it.
-void *back_queue(queue *q) {
+void *back_queue(queue_t *q) {
 
-  if (unlikely(!q)) {
+  if (!q) {
     return NULL;
   }
 
@@ -158,17 +138,14 @@ void *back_queue(queue *q) {
   }
 
   return q->tail->value;
-  // { returns the value of the last element or NULL if the queue is empty }
 }
 
-// { q != NULL }
 // Returns the current size of the queue.
-size_t get_queue_size(queue *q) {
+size_t get_queue_size(queue_t *q) {
 
-  if (unlikely(!q)) {
+  if (!q) {
     return 0;
   }
 
   return q->queue_size;
-  // { returns the current size of the queue }
 }
