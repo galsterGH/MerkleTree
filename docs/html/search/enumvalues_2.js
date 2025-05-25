@@ -1,6 +1,0 @@
-var searchData=
-[
-  ['queue_5fnull_5fptr_0',['QUEUE_NULL_PTR',['../_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483daac4638c9d8189f5fb3cdbe6effa9b6e88',1,'MerkleQueue.h']]],
-  ['queue_5fok_1',['QUEUE_OK',['../_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483daaeb56fd67077ab485e48d35928772d5fb',1,'MerkleQueue.h']]],
-  ['queue_5fout_5fof_5fmemory_2',['QUEUE_OUT_OF_MEMORY',['../_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483daadb87c25caa704780329eaa109fb49778',1,'MerkleQueue.h']]]
-];
