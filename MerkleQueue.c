@@ -19,11 +19,11 @@ typedef struct queue_node {
   struct queue_node *next;
 } queue_node;
 
-typedef struct queue {
+struct queue {
   queue_node *head;
   queue_node *tail;
   size_t queue_size;
-} queue_t;
+};
 
 // Initializes a new queue_t with a sentinel node and returns a pointer to it.
 queue_t *init_queue() {
