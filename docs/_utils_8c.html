@@ -91,15 +91,25 @@ $(function(){initNavTree('_utils_8c.html','',''); });
   <div class="headertitle"><div class="title">Utils.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Utility functions for the Merkle tree implementation.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_utils_8h_source.html">Utils.h</a>&quot;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a15a7b26b48e59c2f6fbe11271c608c4f" id="r_a15a7b26b48e59c2f6fbe11271c608c4f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15a7b26b48e59c2f6fbe11271c608c4f">Merkle_Malloc</a> (size_t size, const char *file, int line)</td></tr>
+<tr class="memdesc:a15a7b26b48e59c2f6fbe11271c608c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates zero-initialized memory with optional debug information.  <br /></td></tr>
 <tr class="memitem:a7ebccc0def0676d6465f3733ddaad2d4" id="r_a7ebccc0def0676d6465f3733ddaad2d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ebccc0def0676d6465f3733ddaad2d4">Merkle_Free</a> (void *d, const char *file, int line)</td></tr>
+<tr class="memdesc:a7ebccc0def0676d6465f3733ddaad2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory previously allocated by Merkle_Malloc, with optional debug information.  <br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Utility functions for the Merkle tree implementation. </p>
+<p>This file contains utility functions and definitions for the Merkle tree implementation, including memory management functions with debugging support.</p>
+<dl class="section author"><dt>Author</dt><dd>Guy Alster </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>May 24, 2025 </dd></dl>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a7ebccc0def0676d6465f3733ddaad2d4" name="a7ebccc0def0676d6465f3733ddaad2d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ebccc0def0676d6465f3733ddaad2d4">&#9670;&#160;</a></span>Merkle_Free()</h2>
 
@@ -123,6 +133,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Frees memory previously allocated by Merkle_Malloc, with optional debug information. </p>
+<p>This function frees the memory pointed to by <code class="param">d</code>. If MERKLE_DEBUG is defined, it prints debug information about the deallocation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>Pointer to the memory to free. </td></tr>
+    <tr><td class="paramname">file</td><td>Source file name where the deallocation is requested. </td></tr>
+    <tr><td class="paramname">line</td><td>Line number in the source file where the deallocation is requested. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -149,6 +170,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Allocates zero-initialized memory with optional debug information. </p>
+<p>This function allocates a memory block of the given size, zero-initializes it, and, if MERKLE_DEBUG is defined, prints debug information about the allocation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Number of bytes to allocate. </td></tr>
+    <tr><td class="paramname">file</td><td>Source file name where the allocation is requested. </td></tr>
+    <tr><td class="paramname">line</td><td>Line number in the source file where the allocation is requested. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the allocated memory, or NULL if allocation fails. </dd></dl>
 
 </div>
 </div>
