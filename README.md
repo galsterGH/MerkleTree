@@ -14,6 +14,16 @@ This project provides an implementation of a Merkle Tree in C. A Merkle Tree is 
 - `Utils.c`: Contains the implementation of a queue data structure and utility functions.
 - `Utils.h`: Header file for the utility functions and queue implementation.
 
+## 📚 Documentation
+
+This project includes Doxygen-generated documentation.
+
+To read it:
+
+- Open [`docs/index.html`](docs/index.html) in a browser
+- No need to regenerate — everything is already included
+
+
 ## Build Instructions
 To build the project, ensure you have OpenSSL installed and run the following command:
 
