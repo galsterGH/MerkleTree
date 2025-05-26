@@ -49,7 +49,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_merkle_8c.html"
+"_merkle_8h.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

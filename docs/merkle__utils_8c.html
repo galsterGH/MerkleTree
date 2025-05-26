@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: Utils.h File Reference</title>
+<title>Merkle Tree: src/merkle_utils.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('_utils_8h.html','',''); });
+$(function(){initNavTree('merkle__utils_8c.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -88,20 +88,12 @@ $(function(){initNavTree('_utils_8h.html','',''); });
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">Utils.h File Reference</div></div>
+  <div class="headertitle"><div class="title">merkle_utils.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
-</div>
-<p><a href="_utils_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a217a0bd562b98ae8c2ffce44935351e1" id="r_a217a0bd562b98ae8c2ffce44935351e1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a217a0bd562b98ae8c2ffce44935351e1">likely</a>(x)</td></tr>
-<tr class="memitem:ac6c45889010c1bd68631771b64f18101" id="r_ac6c45889010c1bd68631771b64f18101"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6c45889010c1bd68631771b64f18101">unlikely</a>(x)</td></tr>
-<tr class="memitem:a21778930659f797c79be4cba64096e1b" id="r_a21778930659f797c79be4cba64096e1b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21778930659f797c79be4cba64096e1b">MMalloc</a>(x)</td></tr>
-<tr class="memitem:a0961aac681e9b27ab549eaeb83b1a8a4" id="r_a0961aac681e9b27ab549eaeb83b1a8a4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0961aac681e9b27ab549eaeb83b1a8a4">MFree</a>(x)</td></tr>
-</table><table class="memberdecls">
+<div class="textblock"><code>#include &quot;<a class="el" href="_utils_8h_source.html">Utils.h</a>&quot;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a15a7b26b48e59c2f6fbe11271c608c4f" id="r_a15a7b26b48e59c2f6fbe11271c608c4f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15a7b26b48e59c2f6fbe11271c608c4f">Merkle_Malloc</a> (size_t size, const char *file, int line)</td></tr>
@@ -109,81 +101,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a7ebccc0def0676d6465f3733ddaad2d4" id="r_a7ebccc0def0676d6465f3733ddaad2d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ebccc0def0676d6465f3733ddaad2d4">Merkle_Free</a> (void *d, const char *file, int line)</td></tr>
 <tr class="memdesc:a7ebccc0def0676d6465f3733ddaad2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory previously allocated by Merkle_Malloc, with optional debug information.  <br /></td></tr>
 </table>
-<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
-<a id="a217a0bd562b98ae8c2ffce44935351e1" name="a217a0bd562b98ae8c2ffce44935351e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a217a0bd562b98ae8c2ffce44935351e1">&#9670;&#160;</a></span>likely</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define likely</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">__builtin_expect(!!(x), 1)</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a0961aac681e9b27ab549eaeb83b1a8a4" name="a0961aac681e9b27ab549eaeb83b1a8a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0961aac681e9b27ab549eaeb83b1a8a4">&#9670;&#160;</a></span>MFree</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MFree</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="merkle__utils_8c.html#a7ebccc0def0676d6465f3733ddaad2d4">Merkle_Free</a>(x, __FILE__, __LINE__)</div>
-<div class="ttc" id="amerkle__utils_8c_html_a7ebccc0def0676d6465f3733ddaad2d4"><div class="ttname"><a href="merkle__utils_8c.html#a7ebccc0def0676d6465f3733ddaad2d4">Merkle_Free</a></div><div class="ttdeci">void Merkle_Free(void *d, const char *file, int line)</div><div class="ttdoc">Frees memory previously allocated by Merkle_Malloc, with optional debug information.</div><div class="ttdef"><b>Definition</b> merkle_utils.c:56</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a21778930659f797c79be4cba64096e1b" name="a21778930659f797c79be4cba64096e1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21778930659f797c79be4cba64096e1b">&#9670;&#160;</a></span>MMalloc</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MMalloc</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="merkle__utils_8c.html#a15a7b26b48e59c2f6fbe11271c608c4f">Merkle_Malloc</a>(x, __FILE__, __LINE__)</div>
-<div class="ttc" id="amerkle__utils_8c_html_a15a7b26b48e59c2f6fbe11271c608c4f"><div class="ttname"><a href="merkle__utils_8c.html#a15a7b26b48e59c2f6fbe11271c608c4f">Merkle_Malloc</a></div><div class="ttdeci">void * Merkle_Malloc(size_t size, const char *file, int line)</div><div class="ttdoc">Allocates zero-initialized memory with optional debug information.</div><div class="ttdef"><b>Definition</b> merkle_utils.c:27</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ac6c45889010c1bd68631771b64f18101" name="ac6c45889010c1bd68631771b64f18101"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6c45889010c1bd68631771b64f18101">&#9670;&#160;</a></span>unlikely</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define unlikely</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">__builtin_expect(!!(x), 0)</div>
-</div><!-- fragment -->
-</div>
-</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a7ebccc0def0676d6465f3733ddaad2d4" name="a7ebccc0def0676d6465f3733ddaad2d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ebccc0def0676d6465f3733ddaad2d4">&#9670;&#160;</a></span>Merkle_Free()</h2>
@@ -273,7 +190,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a href="_utils_8h.html">Utils.h</a></li>
+    <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="merkle__utils_8c.html">merkle_utils.c</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0 </li>
   </ul>
 </div>
