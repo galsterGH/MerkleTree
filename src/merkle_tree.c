@@ -1,5 +1,5 @@
 /**
- * @file Merkle.c
+ * @file merkle_tree.c
  * @brief Implementation of a Merkle tree using SHA-256 and a queue-based
  * approach.
  *
@@ -26,19 +26,8 @@
 #define DATA_TYPE (1)
 #define HASH_TYPE (2)
 
-#define FREE_ALL(...) free_all_variadic(__VA_ARGS__, (void *)-1)
 #define DEALLOC_QUEUE_ELEMENTS(...)                                            \
   dealloc_queue_elements_variadic(__VA_ARGS__, (queue_element_t *)-1)
-
-
-#define HASH_TWO_NODES_SHA256(n1, n2, out)         \
-  do {                                             \
-    SHA256_CTX ctx;                                \
-    SHA256_Init(&ctx);                             \
-    SHA256_Update(&ctx, (n1)->hash, HASH_SIZE);    \
-    SHA256_Update(&ctx, (n2)->hash, HASH_SIZE);    \
-    SHA256_Final((out), &ctx);                     \
-  } while (0)
 
 /**
  * @brief Policy for deallocation of queue elements.
@@ -88,20 +77,6 @@ typedef struct queue_element_t {
   int queue_element_type; /**< Type of the queue element (DATA_TYPE or
                              HASH_TYPE). */
 } queue_element_t;
-
-/**
- * @brief Frees a variadic list of pointers using MFree.
- * @param first The first pointer to free.
- * @param ... Additional pointers to free, terminated by (void *)-1.
- */
-static void free_all_variadic(void *first, ...);
-
-/**
- * @brief Returns a deallocator function pointer based on the policy.
- * @param policy The deallocation policy.
- * @return The deallocator function pointer or NULL.
- */
-static deallocator get_queue_dealloc(deallocation_policy policy);
 
 /**
  * @brief Recursively deallocates a Merkle tree node and its children.
@@ -163,34 +138,6 @@ void merkle_tree_destroy(merkle_tree_t *tree);
  */
 merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
                                   size_t count, size_t branching_factor);
-
-// --- Implementation of the above functions follows ---
-
-static void free_all_variadic(void *first, ...) {
-  va_list args;
-  va_start(args, first);
-  void *ptr = first;
-
-  while (ptr != (void *)-1) {
-  
-    if (ptr != NULL) {
-      MFree(ptr);
-    }
-  
-    ptr = va_arg(args, void *);
-  }
-  
-  va_end(args);
-}
-
-static deallocator get_queue_dealloc(deallocation_policy policy) {
-
-  if (policy == Dealloc) {
-    return &free;
-  }
-
-  return NULL;
-}
 
 static void dealloc_hash_node(merkle_node_t *e) {
   
@@ -278,16 +225,6 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent){
    
   //finalize
   SHA256_Final(parent->hash,&ctx);
-  return MERKLE_SUCCESS;
-}
-
-static merkle_error_t hash_two_nodes(merkle_node_t *n1, merkle_node_t *n2,
-                                     unsigned char out[HASH_SIZE]) {
-  if (!n1 || !n2 || !out) {
-    return MERKLE_NULL_ARG;
-  }
-
-  HASH_TWO_NODES_SHA256(n1, n2, out);
   return MERKLE_SUCCESS;
 }
 
@@ -468,8 +405,3 @@ cleanup:
   free_queue(queue, dealloc_queue_element);
   return res;
 }
-
-/**
- * @brief Main entry point for testing.
- */
-int main() { return 0; }

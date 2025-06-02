@@ -1,5 +1,5 @@
 /**
- * @file Utils.c
+ * @file merkle_utils.c
  * @brief Utility functions for the Merkle tree implementation.
  *
  * This file contains utility functions and definitions for the Merkle tree
@@ -9,8 +9,9 @@
  * @date May 24, 2025
  */
 
-#include "Utils.h"
 #include <stdlib.h>
+#include "Utils.h"
+
 
 /**
  * @brief Allocates zero-initialized memory with optional debug information.
