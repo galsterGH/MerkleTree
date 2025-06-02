@@ -46,10 +46,11 @@ typedef struct merkle_tree merkle_tree_t;
  * @param data   Array of pointers to data blocks.
  * @param sizes  Array of sizes for each data block.
  * @param count  Number of data blocks.
+ * @param branching_factor Maximum number of children a node can have
  * @return Pointer to the created Merkle tree, or NULL on failure.
  */
 merkle_tree_t *merkle_tree_create(const void **data, const size_t *sizes,
-                                  size_t count);
+                                  size_t count, size_t branching_factor);
 
 /**
  * @brief Destroys a Merkle tree and frees all associated memory.

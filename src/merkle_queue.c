@@ -14,6 +14,8 @@
 #include "Utils.h"
 #include <stdlib.h>
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
 typedef struct queue_node {
   void *value;
   struct queue_node *next;
@@ -148,4 +150,28 @@ size_t get_queue_size(queue_t *q) {
   }
 
   return q->queue_size;
+}
+
+
+queue_result_t deque_n(queue_t *q, size_t *count, void ***result){
+  if(!count){
+    return QUEUE_NULL_PTR;
+  }
+
+  size_t size = get_queue_size(q);
+  size_t deque = min((*count),size);
+
+  *result = MMalloc(deque * sizeof(void *));
+  
+  if(!*result){
+    *count = 0;
+    return QUEUE_OUT_OF_MEMORY;
+  }
+
+  for(size_t i = 0; i < deque; ++i){
+    (*result)[i] = pop_queue(q); 
+  }
+
+  (*count) = deque;
+  return QUEUE_OK;
 }
