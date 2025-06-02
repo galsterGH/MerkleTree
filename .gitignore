@@ -1,0 +1,11 @@
+# Ignore build artifacts and temporary files
+merkle
+*.o
+*.out
+*.log
+*.tmp
+*.swp
+*.bak
+*.dSYM/
+dSYM/
+.DS_Store

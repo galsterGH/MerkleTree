@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "macos-clang-arm64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}",
+                "${workspaceFolder}/src",        
+                "${workspaceFolder}/include", 
+                "/opt/homebrew/Cellar/openssl@3/3.5.0/include"
+            ],
+            "compilerPath": "/opt/homebrew/opt/llvm/bin/clang",
+            "cStandard": "c23",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "macos-clang-arm64",
+            "compilerArgs": [
+                "-I/opt/homebrew/Cellar/openssl@3/3.5.0/include",
+                "-I/include"
+            ]
+        }
+    ],
+    "version": 4
+}
