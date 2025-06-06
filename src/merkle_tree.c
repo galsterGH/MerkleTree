@@ -319,16 +319,38 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
 
           size_t dequed = branching_factor;
 
+          queue_element_t **child_elements = NULL;
+
           queue_result_t combo_result = deque_n(
-            queue, 
-            &dequed, 
-            (void ***)&(combined->mnode->children));
-          
+            queue,
+            &dequed,
+            (void ***)&child_elements);
+
           if(combo_result != QUEUE_OK){
             DEALLOC_QUEUE_ELEMENTS(combined);
             ret_code = MERKLE_FAILED_TREE_BUILD;
             goto failure;
           }
+
+          combined->mnode->children =
+              MMalloc(dequed * sizeof(*(combined->mnode->children)));
+
+          if(!combined->mnode->children){
+            for(size_t j = 0; j < dequed; ++j){
+              dealloc_queue_element(child_elements[j]);
+            }
+            MFree(child_elements);
+            DEALLOC_QUEUE_ELEMENTS(combined);
+            ret_code = MERKLE_FAILED_MEM_ALLOC;
+            goto failure;
+          }
+
+          for(size_t j = 0; j < dequed; ++j){
+            combined->mnode->children[j] = child_elements[j]->mnode;
+            MFree(child_elements[j]);
+          }
+
+          MFree(child_elements);
 
           combined->mnode->child_count = dequed;
           ret_code = hash_merkle_node(combined->mnode);
@@ -349,7 +371,10 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
   }
   goto success;
 failure:
-  MFree(result);
+  if (*result) {
+    MFree(*result);
+    *result = NULL;
+  }
 success:
   return ret_code;
 }
@@ -388,7 +413,8 @@ merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
     queue_element_t *element = MMalloc(sizeof *element);
 
     if (!element) {
-      goto cleanup;
+      free_queue(queue, dealloc_queue_element);
+      return NULL;
     }
 
     element->data.d = data[i];
@@ -397,11 +423,16 @@ merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
     push_queue(queue, element);
   }
 
-  if (build_tree_from_queue(queue,branching_factor, &res) != MERKLE_SUCCESS) {
+  merkle_error_t build_res =
+      build_tree_from_queue(queue, branching_factor, &res);
+
+  if (build_res != MERKLE_SUCCESS) {
     res = NULL;
+    free_queue(queue, dealloc_queue_element);
+  } else {
+    /* queue elements are now part of the tree - only free the queue nodes */
+    free_queue(queue, NULL);
   }
 
-cleanup:
-  free_queue(queue, dealloc_queue_element);
   return res;
 }
