@@ -22,14 +22,23 @@
 #include "MerkleQueue.h"
 #include "Utils.h"
 
+/** Size in bytes of a SHA-256 hash digest. */
 #define HASH_SIZE (32)
+
+/** Identifier for data elements when building the tree. */
 #define DATA_TYPE (1)
+
+/** Identifier for hash elements when building the tree. */
 #define HASH_TYPE (2)
 
+/**
+ * @brief Helper to call dealloc_queue_elements_variadic() with a terminator.
+ */
 #define DEALLOC_QUEUE_ELEMENTS(...)                                            \
   dealloc_queue_elements_variadic(__VA_ARGS__, (queue_element_t *)-1)
 
 
+/** True if there is only one element left in the queue. */
 #define IS_LAST_ELEMENT(size) (size) == 1
 
 /**
@@ -194,7 +203,11 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
   // zero out all the memory
   memset(*result ,0, sizeof **result); 
 
-  // while there are elements in the queue process it
+  /*
+   * Process the queue level by level until a single node remains.
+   * Each iteration collapses one tree level by combining up to
+   * @p branching_factor child nodes under a newly allocated parent.
+   */
   while (get_queue_size(queue)) {
 
    merkle_node_t *merkle_node = front_queue(queue);
@@ -217,8 +230,11 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       return MERKLE_SUCCESS;
     }
       
+    /* Number of parent nodes to create for this level. Each parent will
+     * combine up to @p branching_factor children. */
     size_t full_nodes = (queue_size + branching_factor - 1)/branching_factor;
 
+    /* Build the next level of the tree by grouping children under new parents */
     for(size_t i = 0; i < full_nodes; ++i) {
       merkle_node_t *parent_node = MMalloc(sizeof *parent_node);
 
@@ -229,6 +245,8 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
 
       memset(parent_node,0,sizeof(*parent_node));
 
+      /* Request up to branching_factor children from the queue.  The actual
+       * number dequeued is returned in @p dequed. */
       size_t dequed = branching_factor;
 
       queue_result_t combo_result = deque_n(
@@ -243,6 +261,8 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       }
 
       parent_node->child_count = dequed;
+
+      /* Compute the parent's hash from its children. */
       merkle_error_t ret_code = hash_merkle_node(parent_node);
 
       if (ret_code != MERKLE_SUCCESS) {
@@ -251,6 +271,7 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
         return ret_code;
       }
 
+      /* Enqueue the newly created parent for processing in the next level. */
       if(push_queue(queue, parent_node) != QUEUE_OK){
         dealloc_hash_node(parent_node);
         MFree(*result);
