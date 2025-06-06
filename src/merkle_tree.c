@@ -218,18 +218,19 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
     }
       
     size_t full_nodes = (queue_size + branching_factor - 1)/branching_factor;
-    merkle_node_t *parent_node = MMalloc(sizeof *parent_node);
-
-    if(!parent_node){
-      MFree(*result);
-      return MERKLE_FAILED_MEM_ALLOC;
-    }
-
-    memset(parent_node,0,sizeof(*parent_node));
 
     for(size_t i = 0; i < full_nodes; ++i) {
+      merkle_node_t *parent_node = MMalloc(sizeof *parent_node);
+
+      if(!parent_node){
+        MFree(*result);
+        return MERKLE_FAILED_MEM_ALLOC;
+      }
+
+      memset(parent_node,0,sizeof(*parent_node));
+
       size_t dequed = branching_factor;
-      
+
       queue_result_t combo_result = deque_n(
         queue,
         &dequed,
