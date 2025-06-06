@@ -320,7 +320,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
           size_t dequed = branching_factor;
 
           queue_element_t **child_elements = NULL;
-
           queue_result_t combo_result = deque_n(
             queue,
             &dequed,
