@@ -88,7 +88,8 @@
     "locale": "c",
     "ratio": "c",
     "streambuf": "c",
-    "complex": "c"
+    "complex": "c",
+    "__node_handle": "c"
   },
   "[c]": {
     "editor.defaultFormatter": "xaver.clang-format",
