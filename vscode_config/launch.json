@@ -1,0 +1,46 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests/test_merkle_tree",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/tests",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "build tests",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Debug Single Test Function",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests/test_merkle_tree",
+      "args": [],
+      "stopAtEntry": true,
+      "cwd": "${workspaceFolder}/tests",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "build tests"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/guyalster/Projects/Merkle/src",
+      "program": "/Users/guyalster/Projects/Merkle/src/build/Debug/outDebug"
+    }
+  ]
+}

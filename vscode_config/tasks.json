@@ -1,0 +1,153 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build merkle library",
+      "type": "shell",
+      "command": "clang",
+      "args": [
+        "-c",
+        "-Wno-deprecated-declarations",
+        "-g",
+        "src/merkle_queue.c",
+        "src/merkle_tree.c",
+        "src/merkle_utils.c",
+        "-I.",
+        "-I./include",
+        "-I/opt/homebrew/Cellar/openssl@3/3.5.0/include"
+      ],
+      "group": "build",
+      "problemMatcher": ["$gcc"],
+      "detail": "Compile Merkle tree library (without linking)"
+    },
+    {
+      "label": "build tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["all"],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "Build test executable"
+    },
+    {
+      "label": "run tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["test"],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "dependsOn": "build tests",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run tests with memory check",
+      "type": "shell",
+      "command": "make",
+      "args": ["test-memory"],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "dependsOn": "build tests",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run tests with debug",
+      "type": "shell",
+      "command": "make",
+      "args": ["test-debug"],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run test script",
+      "type": "shell",
+      "command": "./run_tests.sh",
+      "args": [],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "clean tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["clean"],
+      "options": {
+        "cwd": "${workspaceFolder}/tests"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "generate doxygen docs",
+      "type": "shell",
+      "command": "doxygen",
+      "args": ["Doxyfile"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "open doxygen docs",
+      "type": "shell",
+      "command": "open",
+      "args": ["docs/index.html"],
+      "problemMatcher": []
+    },
+    {
+      "label": "full build and test",
+      "dependsOn": [
+        "build tests",
+        "run tests",
+        "generate doxygen docs"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build"
+    }
+  ]
+}

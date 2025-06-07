@@ -236,7 +236,7 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       return MERKLE_FAILED_TREE_BUILD;
     }
       
-      if (IS_LAST_ELEMENT(queue_size)) {
+    if (IS_LAST_ELEMENT(queue_size)) {
 
       if(pop_queue(queue) != merkle_node){
         MFree(*result);
@@ -247,7 +247,7 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       (*result)->root = merkle_node;
       CLEAN_UP_NEXT_LVL((&next_level), next_level_alloc_count);
       return MERKLE_SUCCESS;
-      }
+    }
       
     /* Number of parent nodes to create for this level. Each parent will
      * combine up to @p branching_factor children. */
@@ -263,7 +263,7 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
 
       next_level_alloc_count = full_nodes;
     }
-    
+
     // clear all the pointers in next_level to be prepared to process the queue
     memset(next_level, 0, full_nodes * sizeof(merkle_node_t *));
 
