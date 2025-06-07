@@ -369,6 +369,92 @@ static int test_various_branching_factors() {
 }
 
 /**
+ * @brief Verify root hash for a known single element.
+ */
+static int test_root_hash_single_element() {
+    const char *data[] = {"Hello"};
+    size_t sizes[] = {5};
+
+    const unsigned char expected[HASH_SIZE] = {
+        0x18, 0x5f, 0x8d, 0xb3, 0x22, 0x71, 0xfe, 0x25,
+        0xf5, 0x61, 0xa6, 0xfc, 0x93, 0x8b, 0x2e, 0x26,
+        0x43, 0x06, 0xec, 0x30, 0x4e, 0xda, 0x51, 0x80,
+        0x07, 0xd1, 0x76, 0x48, 0x26, 0x38, 0x19, 0x69
+    };
+
+    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 1, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
+                "Root hash mismatch for single element");
+
+    merkle_tree_destroy(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Verify root hash for a known two element tree.
+ */
+static int test_root_hash_two_elements() {
+    const char *data[] = {"Test", "Data"};
+    size_t sizes[] = {4, 4};
+
+    const unsigned char expected[HASH_SIZE] = {
+        0xb8, 0x0f, 0xbc, 0x01, 0x2e, 0x10, 0x74, 0x71,
+        0xa5, 0x7b, 0x75, 0xf7, 0x2e, 0x56, 0x6c, 0xcc,
+        0x5c, 0x53, 0x27, 0x36, 0x2e, 0xaf, 0x62, 0x33,
+        0x1a, 0x0b, 0x04, 0x6b, 0x20, 0x3a, 0xf5, 0x21
+    };
+
+    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 2, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
+                "Root hash mismatch for two elements");
+
+    merkle_tree_destroy(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Verify root hash for a known four element tree.
+ */
+static int test_root_hash_four_elements() {
+    const char *data[] = {"Hello", "World", "Merkle", "Tree"};
+    size_t sizes[] = {5, 5, 6, 4};
+
+    const unsigned char expected[HASH_SIZE] = {
+        0xa1, 0x55, 0x41, 0x3a, 0xb3, 0xc2, 0x1a, 0x2a,
+        0xe8, 0x88, 0x4c, 0xdb, 0x7a, 0x49, 0x93, 0xa3,
+        0x37, 0xad, 0x1a, 0xed, 0x4d, 0x1d, 0xcf, 0xfe,
+        0xce, 0x16, 0xa5, 0x90, 0x89, 0x9a, 0x80, 0xeb
+    };
+
+    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
+                "Root hash mismatch for four elements");
+
+    merkle_tree_destroy(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Validate root child count with large branching factor.
+ */
+static int test_root_child_count_large_bf() {
+    const char *data[5];
+    size_t sizes[5];
+    create_test_data((const char **)data, sizes, 5);
+
+    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 5, 10);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    TEST_ASSERT(tree->root->child_count == 5,
+                "Root should have one child per element when BF is large");
+
+    merkle_tree_destroy(tree);
+    TEST_PASS();
+}
+
+/**
  * @brief Print test summary and return overall result.
  */
 static int print_test_summary() {
@@ -416,6 +502,10 @@ int main() {
     RUN_TEST(test_large_dataset);
     RUN_TEST(test_memory_management);
     RUN_TEST(test_various_branching_factors);
+    RUN_TEST(test_root_hash_single_element);
+    RUN_TEST(test_root_hash_two_elements);
+    RUN_TEST(test_root_hash_four_elements);
+    RUN_TEST(test_root_child_count_large_bf);
     
     return print_test_summary();
 }
