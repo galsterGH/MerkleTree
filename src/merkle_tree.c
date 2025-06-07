@@ -236,16 +236,18 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       return MERKLE_FAILED_TREE_BUILD;
     }
       
-    if (IS_LAST_ELEMENT(queue_size)) {
+      if (IS_LAST_ELEMENT(queue_size)) {
 
       if(pop_queue(queue) != merkle_node){
         MFree(*result);
+        CLEAN_UP_NEXT_LVL((&next_level), next_level_alloc_count);
         return MERKLE_FAILED_TREE_BUILD;
       }
 
       (*result)->root = merkle_node;
+      CLEAN_UP_NEXT_LVL((&next_level), next_level_alloc_count);
       return MERKLE_SUCCESS;
-    }
+      }
       
     /* Number of parent nodes to create for this level. Each parent will
      * combine up to @p branching_factor children. */
