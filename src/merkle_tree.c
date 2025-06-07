@@ -38,8 +38,23 @@
   dealloc_queue_elements_variadic(__VA_ARGS__, (queue_element_t *)-1)
 
 
+#define CLEAN_UP_NEXT_LVL(next_level,num_of_nodes)\
+  do{\
+    if(!(*next_level)) break;\
+    for(size_t nd = 0; nd < num_of_nodes; ++nd){\
+        if((*next_level)[nd]){\
+          dealloc_hash_node((*next_level)[nd]);\
+        }\
+    }\
+    MFree((*next_level));\
+    *next_level = NULL;\
+  }while(0)
+
+
 /** True if there is only one element left in the queue. */
 #define IS_LAST_ELEMENT(size) (size) == 1
+
+#define IS_LEAF_NODES_LEVEL(tree_lvl) (tree_lvl) == 0
 
 /**
  * @brief Policy for deallocation of queue elements.
@@ -186,6 +201,9 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent){
 static merkle_error_t build_tree_from_queue(queue_t *queue,
        size_t branching_factor, merkle_tree_t **result) {
 
+  size_t next_level_alloc_count = 0;
+  merkle_node_t **next_level = NULL;
+
   if (!queue || !result) {
     return MERKLE_NULL_ARG;
   }
@@ -208,17 +226,16 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
    * Each iteration collapses one tree level by combining up to
    * @p branching_factor child nodes under a newly allocated parent.
    */
-  while (get_queue_size(queue)) {
+  for (size_t tree_lvl = 0; get_queue_size(queue); tree_lvl++) {
 
-   merkle_node_t *merkle_node = front_queue(queue);
+    merkle_node_t *merkle_node = front_queue(queue);
+    size_t queue_size = get_queue_size(queue);
 
     if(!merkle_node){
       MFree(*result);
       return MERKLE_FAILED_TREE_BUILD;
     }
       
-    size_t queue_size = get_queue_size(queue);
-
     if (IS_LAST_ELEMENT(queue_size)) {
 
       if(pop_queue(queue) != merkle_node){
@@ -234,16 +251,33 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
      * combine up to @p branching_factor children. */
     size_t full_nodes = (queue_size + branching_factor - 1)/branching_factor;
 
+    if(IS_LEAF_NODES_LEVEL(tree_lvl)) {
+      next_level = MMalloc(full_nodes *(sizeof(merkle_node_t *)));
+
+      if(!next_level){
+        MFree(*result);
+        return MERKLE_FAILED_MEM_ALLOC;
+      }
+
+      next_level_alloc_count = full_nodes;
+    }
+    
+    // clear all the pointers in next_level to be prepared to process the queue
+    memset(next_level, 0, full_nodes * sizeof(merkle_node_t *));
+
+
     /* Build the next level of the tree by grouping children under new parents */
     for(size_t i = 0; i < full_nodes; ++i) {
       merkle_node_t *parent_node = MMalloc(sizeof *parent_node);
 
       if(!parent_node){
         MFree(*result);
+        CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         return MERKLE_FAILED_MEM_ALLOC;
       }
 
       memset(parent_node,0,sizeof(*parent_node));
+      next_level[i] = parent_node;
 
       /* Request up to branching_factor children from the queue.  The actual
        * number dequeued is returned in @p dequed. */
@@ -255,8 +289,8 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
         (void ***)&(parent_node->children));
 
       if(combo_result != QUEUE_OK){
-        dealloc_hash_node(parent_node);
         MFree(*result);
+        CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         return MERKLE_FAILED_TREE_BUILD;
       }
 
@@ -266,20 +300,27 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       merkle_error_t ret_code = hash_merkle_node(parent_node);
 
       if (ret_code != MERKLE_SUCCESS) {
-        dealloc_hash_node(parent_node);
+        CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         MFree(*result);
         return ret_code;
       }
+    }
+
+    for(size_t i = 0; i < next_level_alloc_count; ++i){
 
       /* Enqueue the newly created parent for processing in the next level. */
-      if(push_queue(queue, parent_node) != QUEUE_OK){
-        dealloc_hash_node(parent_node);
+      if(next_level[i] && push_queue(queue, next_level[i]) != QUEUE_OK){
+        CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         MFree(*result);
         return MERKLE_FAILED_TREE_BUILD;
       }
+
+      //next_level[i] should be NULLified since the ownership of the pointer has moved to the queue
+      next_level[i] = NULL;
     }
   }
 
+  CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
   return MERKLE_SUCCESS;
 }
 
