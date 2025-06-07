@@ -25,19 +25,6 @@
 /** Size in bytes of a SHA-256 hash digest. */
 #define HASH_SIZE (32)
 
-/** Identifier for data elements when building the tree. */
-#define DATA_TYPE (1)
-
-/** Identifier for hash elements when building the tree. */
-#define HASH_TYPE (2)
-
-/**
- * @brief Helper to call dealloc_queue_elements_variadic() with a terminator.
- */
-#define DEALLOC_QUEUE_ELEMENTS(...)                                            \
-  dealloc_queue_elements_variadic(__VA_ARGS__, (queue_element_t *)-1)
-
-
 #define CLEAN_UP_NEXT_LVL(next_level,num_of_nodes)\
   do{\
     if(!(*next_level)) break;\
