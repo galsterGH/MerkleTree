@@ -49,7 +49,7 @@ typedef struct merkle_tree merkle_tree_t;
  * @param branching_factor Maximum number of children a node can have
  * @return Pointer to the created Merkle tree, or NULL on failure.
  */
-merkle_tree_t *merkle_tree_create(const void **data, const size_t *sizes,
+merkle_tree_t *create_merkle_tree(const void **data, const size_t *sizes,
                                   size_t count, size_t branching_factor);
 
 /**
@@ -57,6 +57,6 @@ merkle_tree_t *merkle_tree_create(const void **data, const size_t *sizes,
  *
  * @param tree Pointer to the Merkle tree to destroy.
  */
-void merkle_tree_destroy(merkle_tree_t *tree);
+void dealloc_merkle_tree(merkle_tree_t *tree);
 
 #endif // MERKLE_H

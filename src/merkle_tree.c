@@ -38,6 +38,33 @@
   }while(0)
 
 
+#define INIT_TREE(tree,count)\
+  do{\
+    tree = MMalloc(sizeof *tree);\
+    \
+    \
+    if (!tree) {\
+      return NULL;\
+    }\
+    \
+    memset(tree ,0, sizeof *tree); \
+    \
+    tree->leaves = MMalloc(count * sizeof(*(tree->leaves)));\
+    \
+    if (!(tree->leaves)) {\
+      MFree(tree);\
+      return NULL;\
+    }\
+    \
+    tree->leaf_count = count;\
+    \
+  }while(0)
+
+#define CLEAN_UP_TREE(tree_ptr)\
+    MFree(tree_ptr);\
+    MFree(tree_ptr->leaves);\
+    tree_ptr = NULL
+
 /** True if there is only one element left in the queue. */
 #define IS_LAST_ELEMENT(size) (size) == 1
 
@@ -107,13 +134,13 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent);
  * @return MERKLE_SUCCESS on success, error code otherwise.
  */
 static merkle_error_t build_tree_from_queue(queue_t *queue,
-        size_t branching_factor, merkle_tree_t **result);
+        size_t branching_factor, merkle_tree_t *tree);
 
 /**
  * @brief Destroys a Merkle tree and frees all associated memory.
  * @param tree Pointer to the Merkle tree to destroy.
  */
-void merkle_tree_destroy(merkle_tree_t *tree);
+void dealloc_merkle_tree(merkle_tree_t *tree);
 
 /**
  * @brief Creates a Merkle tree from an array of data blocks.
@@ -122,7 +149,7 @@ void merkle_tree_destroy(merkle_tree_t *tree);
  * @param count Number of data blocks.
  * @return Pointer to the created Merkle tree, or NULL on failure.
  */
-merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
+merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
                                   size_t count, size_t branching_factor);
 
 static void dealloc_hash_node(void *e) {
@@ -186,27 +213,18 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent){
 }
 
 static merkle_error_t build_tree_from_queue(queue_t *queue,
-       size_t branching_factor, merkle_tree_t **result) {
+       size_t branching_factor, merkle_tree_t *tree) {
 
   size_t next_level_alloc_count = 0;
   merkle_node_t **next_level = NULL;
 
-  if (!queue || !result) {
+  if (!queue || !tree) {
     return MERKLE_NULL_ARG;
   }
 
   if(branching_factor == 0){
     return MERKLE_FAILED_TREE_BUILD;
   }
-
-  *result = MMalloc(sizeof **result);
-  
-  if (!(*result)) {
-    return MERKLE_FAILED_MEM_ALLOC;
-  }
-
-  // zero out all the memory
-  memset(*result ,0, sizeof **result); 
 
   /*
    * Process the queue level by level until a single node remains.
@@ -219,19 +237,17 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
     size_t queue_size = get_queue_size(queue);
 
     if(!merkle_node){
-      MFree(*result);
       return MERKLE_FAILED_TREE_BUILD;
     }
       
     if (IS_LAST_ELEMENT(queue_size)) {
 
       if(pop_queue(queue) != merkle_node){
-        MFree(*result);
         CLEAN_UP_NEXT_LVL((&next_level), next_level_alloc_count);
         return MERKLE_FAILED_TREE_BUILD;
       }
 
-      (*result)->root = merkle_node;
+      tree->root = merkle_node;
       CLEAN_UP_NEXT_LVL((&next_level), next_level_alloc_count);
       return MERKLE_SUCCESS;
     }
@@ -244,7 +260,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       next_level = MMalloc(full_nodes *(sizeof(merkle_node_t *)));
 
       if(!next_level){
-        MFree(*result);
         return MERKLE_FAILED_MEM_ALLOC;
       }
 
@@ -260,7 +275,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       merkle_node_t *parent_node = MMalloc(sizeof *parent_node);
 
       if(!parent_node){
-        MFree(*result);
         CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         return MERKLE_FAILED_MEM_ALLOC;
       }
@@ -278,7 +292,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
         (void ***)&(parent_node->children));
 
       if(combo_result != QUEUE_OK){
-        MFree(*result);
         CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         return MERKLE_FAILED_TREE_BUILD;
       }
@@ -290,7 +303,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
 
       if (ret_code != MERKLE_SUCCESS) {
         CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
-        MFree(*result);
         return ret_code;
       }
     }
@@ -300,7 +312,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       /* Enqueue the newly created parent for processing in the next level. */
       if(next_level[i] && push_queue(queue, next_level[i]) != QUEUE_OK){
         CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
-        MFree(*result);
         return MERKLE_FAILED_TREE_BUILD;
       }
 
@@ -313,33 +324,37 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
   return MERKLE_SUCCESS;
 }
 
-void merkle_tree_destroy(merkle_tree_t *tree) {
+void dealloc_merkle_tree(merkle_tree_t *tree) {
   if (!tree){
     return;
   }
 
   dealloc_hash_node(tree->root);
-  MFree(tree->leaves); // if you store this later
-  MFree(tree);
+  CLEAN_UP_TREE(tree);
 }
 
-merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
+merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
                                   size_t count, size_t branching_factor) {
-  merkle_tree_t *res = NULL;
+  merkle_tree_t *tree = NULL;
 
   if (!(data && count > 0 && branching_factor > 0)) {
     return NULL;
   }
 
+  INIT_TREE(tree,count);
+  size_t leaf_idx = 0;
+
   queue_t *queue = init_queue();
 
   if(!queue){
+    CLEAN_UP_TREE(tree);
     return NULL;
   }
 
   for (size_t i = 0; i < count; ++i) {
 
     if (!data[i] || !size[i]) {
+      CLEAN_UP_TREE(tree);
       free_queue(queue, dealloc_hash_node);
       return NULL;
     }
@@ -347,27 +362,32 @@ merkle_tree_t *merkle_tree_create(const void **data, const size_t *size,
     merkle_node_t *merkle_node = MMalloc(sizeof *merkle_node);
 
     if(!merkle_node){
+      CLEAN_UP_TREE(tree);
       free_queue(queue, (dealloc_hash_node));
       return NULL;
     }
 
     if(hash_data_block(data[i], size[i],merkle_node->hash) != MERKLE_SUCCESS){
       dealloc_hash_node(merkle_node);
+      CLEAN_UP_TREE(tree);
       free_queue(queue, dealloc_hash_node);
       return NULL;
     }
 
     if(push_queue(queue,merkle_node) != QUEUE_OK){
+      CLEAN_UP_TREE(tree);
       dealloc_hash_node(merkle_node);
       free_queue(queue, dealloc_hash_node);
       return NULL;
     }
+
+    (tree->leaves)[leaf_idx++] = merkle_node;
   }
 
-  if (build_tree_from_queue(queue, branching_factor, &res) != MERKLE_SUCCESS) {
-    res = NULL;
+  if (build_tree_from_queue(queue, branching_factor, tree) != MERKLE_SUCCESS) {
+    CLEAN_UP_TREE(tree);
   }
 
   free_queue(queue, dealloc_hash_node);
-  return res;
+  return tree;
 }

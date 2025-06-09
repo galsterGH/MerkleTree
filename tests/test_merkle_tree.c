@@ -80,7 +80,7 @@ static void create_test_data(const char **data, size_t *sizes, size_t count) {
  * @brief Test creating a tree with NULL data pointer.
  */
 static int test_create_null_data() {
-    merkle_tree_t *tree = merkle_tree_create(NULL, NULL, 0, 2);
+    merkle_tree_t *tree = create_merkle_tree(NULL, NULL, 0, 2);
     TEST_ASSERT(tree == NULL, "Should return NULL for NULL data");
     TEST_PASS();
 }
@@ -92,7 +92,7 @@ static int test_create_zero_count() {
     const char *data[] = {"test"};
     size_t sizes[] = {4};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 0, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 0, 2);
     TEST_ASSERT(tree == NULL, "Should return NULL for zero count");
     TEST_PASS();
 }
@@ -104,7 +104,7 @@ static int test_create_zero_branching_factor() {
     const char *data[] = {"test"};
     size_t sizes[] = {4};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 1, 0);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 0);
     TEST_ASSERT(tree == NULL, "Should return NULL for zero branching factor");
     TEST_PASS();
 }
@@ -116,7 +116,7 @@ static int test_create_null_data_element() {
     const void *data[] = {NULL, "test"};
     size_t sizes[] = {0, 4};
     
-    merkle_tree_t *tree = merkle_tree_create(data, sizes, 2, 2);
+    merkle_tree_t *tree = create_merkle_tree(data, sizes, 2, 2);
     TEST_ASSERT(tree == NULL, "Should return NULL for NULL data element");
     TEST_PASS();
 }
@@ -128,7 +128,7 @@ static int test_create_zero_size_element() {
     const char *data[] = {"test", "data"};
     size_t sizes[] = {4, 0};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 2, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
     TEST_ASSERT(tree == NULL, "Should return NULL for zero size element");
     TEST_PASS();
 }
@@ -140,11 +140,11 @@ static int test_create_single_element() {
     const char *data[] = {"Hello"};
     size_t sizes[] = {5};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 1, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 2);
     TEST_ASSERT(tree != NULL, "Should successfully create tree with single element");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -156,11 +156,11 @@ static int test_create_binary_tree() {
     size_t sizes[4];
     create_test_data((const char **)data, sizes, 4);
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 4, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
     TEST_ASSERT(tree != NULL, "Should successfully create binary tree");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -172,11 +172,11 @@ static int test_create_ternary_tree() {
     size_t sizes[6];
     create_test_data((const char **)data, sizes, 6);
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 6, 3);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 6, 3);
     TEST_ASSERT(tree != NULL, "Should successfully create ternary tree");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -189,11 +189,11 @@ static int test_create_large_branching_factor() {
     create_test_data((const char **)data, sizes, 5);
     
     // Branching factor larger than number of elements
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 5, 10);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 5, 10);
     TEST_ASSERT(tree != NULL, "Should successfully create tree with large branching factor");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -202,7 +202,7 @@ static int test_create_large_branching_factor() {
  */
 static int test_destroy_null_tree() {
     // Should not crash
-    merkle_tree_destroy(NULL);
+    dealloc_merkle_tree(NULL);
     TEST_PASS();
 }
 
@@ -213,11 +213,11 @@ static int test_different_data_sizes() {
     const char *data[] = {"A", "BB", "CCC", "DDDD", "EEEEE"};
     size_t sizes[] = {1, 2, 3, 4, 5};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 5, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 5, 2);
     TEST_ASSERT(tree != NULL, "Should handle different data sizes");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -229,11 +229,11 @@ static int test_odd_number_elements() {
     size_t sizes[7];
     create_test_data((const char **)data, sizes, 7);
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 7, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 7, 2);
     TEST_ASSERT(tree != NULL, "Should handle odd number of elements");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -245,8 +245,8 @@ static int test_tree_consistency() {
     size_t sizes[] = {4, 4, 4, 4};
     
     // Create two identical trees
-    merkle_tree_t *tree1 = merkle_tree_create((const void **)data, sizes, 4, 2);
-    merkle_tree_t *tree2 = merkle_tree_create((const void **)data, sizes, 4, 2);
+    merkle_tree_t *tree1 = create_merkle_tree((const void **)data, sizes, 4, 2);
+    merkle_tree_t *tree2 = create_merkle_tree((const void **)data, sizes, 4, 2);
     
     TEST_ASSERT(tree1 != NULL && tree2 != NULL, "Both trees should be created");
     
@@ -254,8 +254,8 @@ static int test_tree_consistency() {
     TEST_ASSERT(memcmp(tree1->root->hash, tree2->root->hash, 32) == 0, 
                 "Root hashes should be identical for same data");
     
-    merkle_tree_destroy(tree1);
-    merkle_tree_destroy(tree2);
+    dealloc_merkle_tree(tree1);
+    dealloc_merkle_tree(tree2);
     TEST_PASS();
 }
 
@@ -267,10 +267,10 @@ static int test_tree_sensitivity() {
     const char *data2[] = {"Test", "Different"};
     size_t sizes[] = {4, 4};
     
-    merkle_tree_t *tree1 = merkle_tree_create((const void **)data1, sizes, 2, 2);
+    merkle_tree_t *tree1 = create_merkle_tree((const void **)data1, sizes, 2, 2);
     
     sizes[1] = 9; // Update size for "Different"
-    merkle_tree_t *tree2 = merkle_tree_create((const void **)data2, sizes, 2, 2);
+    merkle_tree_t *tree2 = create_merkle_tree((const void **)data2, sizes, 2, 2);
     
     TEST_ASSERT(tree1 != NULL && tree2 != NULL, "Both trees should be created");
     
@@ -278,8 +278,8 @@ static int test_tree_sensitivity() {
     TEST_ASSERT(memcmp(tree1->root->hash, tree2->root->hash, 32) != 0, 
                 "Root hashes should be different for different data");
     
-    merkle_tree_destroy(tree1);
-    merkle_tree_destroy(tree2);
+    dealloc_merkle_tree(tree1);
+    dealloc_merkle_tree(tree2);
     TEST_PASS();
 }
 
@@ -292,7 +292,7 @@ static int test_empty_string_elements() {
     const char *data[] = {"", "test"};
     size_t sizes[] = {0, 4};
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 2, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
     TEST_ASSERT(tree == NULL, "Should reject zero-length data");
     TEST_PASS();
 }
@@ -316,11 +316,11 @@ static int test_large_dataset() {
         sizes[i] = strlen(allocated_strings[i]);
     }
     
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, count, 4);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, count, 4);
     TEST_ASSERT(tree != NULL, "Should handle large dataset");
     TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
     
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     
     // Cleanup
     for (size_t i = 0; i < count; i++) {
@@ -342,9 +342,9 @@ static int test_memory_management() {
         const char *data[] = {"Memory", "Test", "Data", "Item"};
         size_t sizes[] = {6, 4, 4, 4};
         
-        merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 4, 2);
+        merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
         TEST_ASSERT(tree != NULL, "Tree creation should succeed");
-        merkle_tree_destroy(tree);
+        dealloc_merkle_tree(tree);
     }
     TEST_PASS();
 }
@@ -359,10 +359,10 @@ static int test_various_branching_factors() {
     
     // Test different branching factors
     for (size_t bf = 2; bf <= 8; bf++) {
-        merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 8, bf);
+        merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 8, bf);
         TEST_ASSERT(tree != NULL, "Should work with various branching factors");
         TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
-        merkle_tree_destroy(tree);
+        dealloc_merkle_tree(tree);
     }
     
     TEST_PASS();
@@ -382,12 +382,12 @@ static int test_root_hash_single_element() {
         0x07, 0xd1, 0x76, 0x48, 0x26, 0x38, 0x19, 0x69
     };
 
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 1, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 2);
     TEST_ASSERT(tree != NULL, "Tree creation should succeed");
     TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
                 "Root hash mismatch for single element");
 
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -405,12 +405,12 @@ static int test_root_hash_two_elements() {
         0x1a, 0x0b, 0x04, 0x6b, 0x20, 0x3a, 0xf5, 0x21
     };
 
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 2, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
     TEST_ASSERT(tree != NULL, "Tree creation should succeed");
     TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
                 "Root hash mismatch for two elements");
 
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -428,12 +428,12 @@ static int test_root_hash_four_elements() {
         0xce, 0x16, 0xa5, 0x90, 0x89, 0x9a, 0x80, 0xeb
     };
 
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 4, 2);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
     TEST_ASSERT(tree != NULL, "Tree creation should succeed");
     TEST_ASSERT(memcmp(tree->root->hash, expected, HASH_SIZE) == 0,
                 "Root hash mismatch for four elements");
 
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
@@ -445,12 +445,12 @@ static int test_root_child_count_large_bf() {
     size_t sizes[5];
     create_test_data((const char **)data, sizes, 5);
 
-    merkle_tree_t *tree = merkle_tree_create((const void **)data, sizes, 5, 10);
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 5, 10);
     TEST_ASSERT(tree != NULL, "Tree creation should succeed");
     TEST_ASSERT(tree->root->child_count == 5,
                 "Root should have one child per element when BF is large");
 
-    merkle_tree_destroy(tree);
+    dealloc_merkle_tree(tree);
     TEST_PASS();
 }
 
