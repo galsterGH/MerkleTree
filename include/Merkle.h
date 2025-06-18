@@ -16,6 +16,9 @@
 
 #include <stddef.h>
 
+/** Size in bytes of a SHA-256 hash digest. */
+#define HASH_SIZE (32)
+
 /**
  * @enum merkle_error_t
  * @brief Error codes returned by Merkle tree operations.
@@ -58,5 +61,13 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *sizes,
  * @param tree Pointer to the Merkle tree to destroy.
  */
 void dealloc_merkle_tree(merkle_tree_t *tree);
+
+
+/**
+ * @brief Returns the Merkle Tree root's hash
+ *
+ * @param tree Pointer to the Merkle tree from which to get the root's hash
+ */
+ void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
 
 #endif // MERKLE_H

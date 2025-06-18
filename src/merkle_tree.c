@@ -22,9 +22,6 @@
 #include "MerkleQueue.h"
 #include "Utils.h"
 
-/** Size in bytes of a SHA-256 hash digest. */
-#define HASH_SIZE (32)
-
 #define CLEAN_UP_NEXT_LVL(next_level,num_of_nodes)\
   do{\
     if(!(*next_level)) break;\
@@ -83,7 +80,10 @@ typedef enum deallocation_policy {
  */
 typedef struct merkle_node {
     unsigned char hash[HASH_SIZE];
+    void *data;
     struct merkle_node **children;
+    struct merkle_node *parent;
+    size_t index_in_parent;
     size_t child_count;
 } merkle_node_t;
 
@@ -152,6 +152,10 @@ void dealloc_merkle_tree(merkle_tree_t *tree);
 merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
                                   size_t count, size_t branching_factor);
 
+
+void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
+
+
 static void dealloc_hash_node(void *e) {
 
   if (!e) {
@@ -164,10 +168,14 @@ static void dealloc_hash_node(void *e) {
     for(size_t i = 0; i < node->child_count; ++i){
         dealloc_hash_node(node->children[i]);
     }
-  
+
     MFree(node->children);
   }
 
+  if(node->data) {
+      MFree(node->data);
+  }
+  
   MFree(node);
 }
 
@@ -301,6 +309,11 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       /* Compute the parent's hash from its children. */
       merkle_error_t ret_code = hash_merkle_node(parent_node);
 
+      for(size_t child_idx = 0; child_idx < dequed; ++child_idx) {
+        parent_node->children[child_idx]->index_in_parent = child_idx;
+        parent_node->children[child_idx]->parent = parent_node;
+      }
+
       if (ret_code != MERKLE_SUCCESS) {
         CLEAN_UP_NEXT_LVL((&next_level),next_level_alloc_count);
         return ret_code;
@@ -367,6 +380,18 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
       return NULL;
     }
 
+    memset(merkle_node,0,sizeof *merkle_node);
+    merkle_node->data = MMalloc(size[i]);
+
+    if(merkle_node->data == NULL){
+      dealloc_hash_node(merkle_node);
+      CLEAN_UP_TREE(tree);
+      free_queue(queue, dealloc_hash_node);
+      return NULL;
+    }
+
+    memcpy(merkle_node->data,data[i],size[i]);
+
     if(hash_data_block(data[i], size[i],merkle_node->hash) != MERKLE_SUCCESS){
       dealloc_hash_node(merkle_node);
       CLEAN_UP_TREE(tree);
@@ -390,4 +415,12 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
 
   free_queue(queue, dealloc_hash_node);
   return tree;
+}
+
+void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]) {
+  if(!tree || tree->root == NULL || tree->leaf_count == 0 || !copy_into) {
+    return NULL;
+  }
+
+  memcpy(copy_into,tree->root->hash,HASH_SIZE);
 }
