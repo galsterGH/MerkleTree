@@ -455,6 +455,66 @@ static int test_root_child_count_large_bf() {
 }
 
 /**
+ * @brief Verify that get_tree_hash returns the same value as the root hash.
+ */
+static int test_get_tree_hash_api() {
+    const char *data[] = {"foo", "bar"};
+    size_t sizes[] = {3, 3};
+
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+
+    unsigned char out[HASH_SIZE] = {0};
+    get_tree_hash(tree, out);
+    TEST_ASSERT(memcmp(out, tree->root->hash, HASH_SIZE) == 0,
+                "API should copy the root hash");
+
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Validate that leaf nodes maintain parent links and indices.
+ */
+static int test_leaf_parent_links() {
+    const char *data[4];
+    size_t sizes[4];
+    create_test_data((const char **)data, sizes, 4);
+
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+
+    for (size_t i = 0; i < tree->leaf_count; ++i) {
+        merkle_node_t *leaf = tree->leaves[i];
+        TEST_ASSERT(leaf->parent != NULL, "Leaf should have a parent");
+        TEST_ASSERT(leaf->parent->children[leaf->index_in_parent] == leaf,
+                    "Index in parent should reference the leaf");
+    }
+
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Ensure that input data is copied into leaf nodes.
+ */
+static int test_leaf_data_copied() {
+    const char *data[] = {"copy", "check"};
+    size_t sizes[] = {4, 5};
+
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+
+    for (size_t i = 0; i < tree->leaf_count; ++i) {
+        TEST_ASSERT(memcmp(tree->leaves[i]->data, data[i], sizes[i]) == 0,
+                    "Leaf data should match input");
+    }
+
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
  * @brief Print test summary and return overall result.
  */
 static int print_test_summary() {
@@ -506,6 +566,9 @@ int main() {
     RUN_TEST(test_root_hash_two_elements);
     RUN_TEST(test_root_hash_four_elements);
     RUN_TEST(test_root_child_count_large_bf);
-    
+    RUN_TEST(test_get_tree_hash_api);
+    RUN_TEST(test_leaf_parent_links);
+    RUN_TEST(test_leaf_data_copied);
+
     return print_test_summary();
 }

@@ -57,10 +57,14 @@
     \
   }while(0)
 
-#define CLEAN_UP_TREE(tree_ptr)\
-    MFree(tree_ptr);\
-    MFree(tree_ptr->leaves);\
-    tree_ptr = NULL
+#define CLEAN_UP_TREE(tree_ptr)                       \
+  do {                                               \
+    if (tree_ptr) {                                  \
+      MFree((tree_ptr)->leaves);                     \
+      MFree(tree_ptr);                               \
+      (tree_ptr) = NULL;                             \
+    }                                                \
+  } while (0)
 
 /** True if there is only one element left in the queue. */
 #define IS_LAST_ELEMENT(size) (size) == 1
@@ -418,9 +422,9 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
 }
 
 void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]) {
-  if(!tree || tree->root == NULL || tree->leaf_count == 0 || !copy_into) {
-    return NULL;
+  if (!tree || tree->root == NULL || tree->leaf_count == 0 || !copy_into) {
+    return;  // Invalid input
   }
 
-  memcpy(copy_into,tree->root->hash,HASH_SIZE);
+  memcpy(copy_into, tree->root->hash, HASH_SIZE);
 }

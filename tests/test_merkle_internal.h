@@ -18,8 +18,11 @@
  */
 typedef struct merkle_node {
   unsigned char hash[HASH_SIZE];
-  struct merkle_node **children;
-  size_t child_count;
+  void *data;                     /**< Copy of the original data block. */
+  struct merkle_node **children;  /**< Child node array. */
+  struct merkle_node *parent;     /**< Pointer to the parent node. */
+  size_t index_in_parent;         /**< Index of this node in parent's array. */
+  size_t child_count;             /**< Number of children. */
 } merkle_node_t;
 
 /**
