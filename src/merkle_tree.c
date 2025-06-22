@@ -34,29 +34,6 @@
     *next_level = NULL;\
   }while(0)
 
-
-#define INIT_TREE(tree,count)\
-  do{\
-    tree = MMalloc(sizeof *tree);\
-    \
-    \
-    if (!tree) {\
-      return NULL;\
-    }\
-    \
-    memset(tree ,0, sizeof *tree); \
-    \
-    tree->leaves = MMalloc(count * sizeof(*(tree->leaves)));\
-    \
-    if (!(tree->leaves)) {\
-      MFree(tree);\
-      return NULL;\
-    }\
-    \
-    tree->leaf_count = count;\
-    \
-  }while(0)
-
 #define CLEAN_UP_TREE(tree_ptr)                       \
   do {                                               \
     if (tree_ptr) {                                  \
@@ -109,6 +86,25 @@ struct merkle_tree {
 };
 
 /**
+ * @brief Destroys a Merkle tree and frees all associated memory.
+ * @param tree Pointer to the Merkle tree to destroy.
+ */
+void dealloc_merkle_tree(merkle_tree_t *tree);
+
+/**
+ * @brief Creates a Merkle tree from an array of data blocks.
+ * @param data Array of pointers to data blocks.
+ * @param size Array of sizes for each data block.
+ * @param count Number of data blocks.
+ * @return Pointer to the created Merkle tree, or NULL on failure.
+ */
+merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
+                                  size_t count, size_t branching_factor);
+
+
+void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
+
+/**
  * @brief Recursively deallocates a Merkle tree node and its children.
  * @param e Pointer to the Merkle node to deallocate.
  */
@@ -140,25 +136,32 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent);
 static merkle_error_t build_tree_from_queue(queue_t *queue,
         size_t branching_factor, merkle_tree_t *tree);
 
-/**
- * @brief Destroys a Merkle tree and frees all associated memory.
- * @param tree Pointer to the Merkle tree to destroy.
- */
-void dealloc_merkle_tree(merkle_tree_t *tree);
 
-/**
- * @brief Creates a Merkle tree from an array of data blocks.
- * @param data Array of pointers to data blocks.
- * @param size Array of sizes for each data block.
- * @param count Number of data blocks.
- * @return Pointer to the created Merkle tree, or NULL on failure.
- */
-merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
-                                  size_t count, size_t branching_factor);
+static merkle_error_t init_tree(merkle_tree_t **tree, size_t leafs){
 
+  if(!tree){
+    return MERKLE_NULL_ARG;
+  }
 
-void get_tree_hash(merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
+  *tree = NULL;
+  merkle_tree_t *tr = MMalloc(sizeof(*tr));
+  
+  if(!tr){
+    return MERKLE_FAILED_MEM_ALLOC;
+  }
 
+  memset(tr,0, sizeof(*tr));
+  tr->leaves = MMalloc(leafs * sizeof(*(tr->leaves)));
+
+  if(tr->leaves == NULL){
+      MFree(tr);
+      return MERKLE_FAILED_MEM_ALLOC;
+  }
+
+  tr->leaf_count = leafs;
+  *tree = tr;
+  return MERKLE_SUCCESS;
+}
 
 static void dealloc_hash_node(void *e) {
 
@@ -358,9 +361,11 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
     return NULL;
   }
 
-  INIT_TREE(tree,count);
-  size_t leaf_idx = 0;
+  if(init_tree(&tree,count) != MERKLE_SUCCESS){
+    return NULL;
+  }
 
+  size_t leaf_idx = 0;
   queue_t *queue = init_queue();
 
   if(!queue){

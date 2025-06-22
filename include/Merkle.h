@@ -55,7 +55,7 @@ typedef struct merkle_tree merkle_tree_t;
 merkle_tree_t *create_merkle_tree(const void **data, const size_t *sizes,
                                   size_t count, size_t branching_factor);
 
-/**
+/**s
  * @brief Destroys a Merkle tree and frees all associated memory.
  *
  * @param tree Pointer to the Merkle tree to destroy.
