@@ -4,19 +4,32 @@
             "name": "macos-clang-arm64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}",
-                "${workspaceFolder}/src",        
-                "${workspaceFolder}/include", 
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
                 "/opt/homebrew/Cellar/openssl@3/3.5.0/include"
             ],
-            "compilerPath": "/opt/homebrew/opt/llvm/bin/clang",
-            "cStandard": "c23",
+            "defines": [
+                "_GNU_SOURCE",
+                "MERKLE_DEBUG"
+            ],
+            "compilerPath": "/opt/homebrew/bin/clang",
+            "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "macos-clang-arm64",
+            "intelliSenseMode": "clang-arm64",
             "compilerArgs": [
                 "-I/opt/homebrew/Cellar/openssl@3/3.5.0/include",
-                "-I/include"
-            ]
+                "-I${workspaceFolder}/include",
+                "-Wno-deprecated-declarations"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${workspaceFolder}/include",
+                    "${workspaceFolder}/src",
+                    "/opt/homebrew/Cellar/openssl@3/3.5.0/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4

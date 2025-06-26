@@ -13,6 +13,7 @@
 #define UTILS_H
 
 #include <stddef.h>
+#include <stdio.h>
 
 /**
  * @def likely(x)
@@ -32,6 +33,28 @@
  * false, allowing the compiler to optimize the branch layout accordingly.
  */
 #define unlikely(x) __builtin_expect(!!(x), 0)
+
+#define ALLOC_AND_INIT_SIMPLE(name,count)\
+    do{\
+        name = MMalloc((count) * sizeof(*(name)));\
+        if(name){\
+            memset(name,0,(count) * sizeof(*(name)));\
+        }\
+    }while(0)
+
+#define ALLOC_AND_INIT(T,name,count)\
+    T* name = NULL;\
+    do{\
+        MMalloc((count) * sizeof(*(name)));\
+        if(name){\
+            memset(name,0,(count) * sizeof(*(name)));\
+        }\
+    }while(0)
+
+    
+#define TRY do
+#define CATCH() while(0)
+#define THROW break
 
 /**
  * @def MMalloc(x)

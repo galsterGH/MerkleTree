@@ -39,7 +39,9 @@
   "C_Cpp_Runner.linkerArgs": [],
   "C_Cpp_Runner.includePaths": [
     "${workspaceFolder}",
-    "${workspaceFolder}/src"
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/src",
+    "/opt/homebrew/Cellar/openssl@3/3.5.0/include"
   ],
   "C_Cpp_Runner.includeSearch": [
     "*",
@@ -89,7 +91,9 @@
     "ratio": "c",
     "streambuf": "c",
     "complex": "c",
-    "__node_handle": "c"
+    "__node_handle": "c",
+    "typeinfo": "c",
+    "stdbool.h": "c"
   },
   "[c]": {
     "editor.defaultFormatter": "xaver.clang-format",
@@ -100,5 +104,8 @@
   },
   "editor.formatOnSave": true,
   "C_Cpp.clang_format_style": "file",
-  "C_Cpp.clang_format_fallbackStyle": "LLVM"
+  "C_Cpp.clang_format_fallbackStyle": "LLVM",
+  "C_Cpp.intelliSenseEngine": "default",
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.autocomplete": "default"
 }

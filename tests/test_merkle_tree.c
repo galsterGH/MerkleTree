@@ -79,7 +79,7 @@ static void create_test_data(const char **data, size_t *sizes, size_t count) {
 /**
  * @brief Test creating a tree with NULL data pointer.
  */
-static int test_create_null_data() {
+static int test_create_null_data(void) {
     merkle_tree_t *tree = create_merkle_tree(NULL, NULL, 0, 2);
     TEST_ASSERT(tree == NULL, "Should return NULL for NULL data");
     TEST_PASS();
@@ -88,7 +88,7 @@ static int test_create_null_data() {
 /**
  * @brief Test creating a tree with zero count.
  */
-static int test_create_zero_count() {
+static int test_create_zero_count(void) {
     const char *data[] = {"test"};
     size_t sizes[] = {4};
     
@@ -100,7 +100,7 @@ static int test_create_zero_count() {
 /**
  * @brief Test creating a tree with zero branching factor.
  */
-static int test_create_zero_branching_factor() {
+static int test_create_zero_branching_factor(void) {
     const char *data[] = {"test"};
     size_t sizes[] = {4};
     
@@ -112,7 +112,7 @@ static int test_create_zero_branching_factor() {
 /**
  * @brief Test creating a tree with NULL data element.
  */
-static int test_create_null_data_element() {
+static int test_create_null_data_element(void) {
     const void *data[] = {NULL, "test"};
     size_t sizes[] = {0, 4};
     
@@ -124,7 +124,7 @@ static int test_create_null_data_element() {
 /**
  * @brief Test creating a tree with zero size element.
  */
-static int test_create_zero_size_element() {
+static int test_create_zero_size_element(void) {
     const char *data[] = {"test", "data"};
     size_t sizes[] = {4, 0};
     
@@ -136,7 +136,7 @@ static int test_create_zero_size_element() {
 /**
  * @brief Test creating a tree with single element.
  */
-static int test_create_single_element() {
+static int test_create_single_element(void) {
     const char *data[] = {"Hello"};
     size_t sizes[] = {5};
     
@@ -151,7 +151,7 @@ static int test_create_single_element() {
 /**
  * @brief Test creating a binary tree (branching factor 2).
  */
-static int test_create_binary_tree() {
+static int test_create_binary_tree(void) {
     const char *data[4];
     size_t sizes[4];
     create_test_data((const char **)data, sizes, 4);
@@ -167,7 +167,7 @@ static int test_create_binary_tree() {
 /**
  * @brief Test creating a tree with branching factor 3.
  */
-static int test_create_ternary_tree() {
+static int test_create_ternary_tree(void) {
     const char *data[6];
     size_t sizes[6];
     create_test_data((const char **)data, sizes, 6);
@@ -183,7 +183,7 @@ static int test_create_ternary_tree() {
 /**
  * @brief Test creating a tree with large branching factor.
  */
-static int test_create_large_branching_factor() {
+static int test_create_large_branching_factor(void) {
     const char *data[5];
     size_t sizes[5];
     create_test_data((const char **)data, sizes, 5);
@@ -200,7 +200,7 @@ static int test_create_large_branching_factor() {
 /**
  * @brief Test tree destruction with NULL pointer.
  */
-static int test_destroy_null_tree() {
+static int test_destroy_null_tree(void) {
     // Should not crash
     dealloc_merkle_tree(NULL);
     TEST_PASS();
@@ -209,7 +209,7 @@ static int test_destroy_null_tree() {
 /**
  * @brief Test creating trees with different data sizes.
  */
-static int test_different_data_sizes() {
+static int test_different_data_sizes(void) {
     const char *data[] = {"A", "BB", "CCC", "DDDD", "EEEEE"};
     size_t sizes[] = {1, 2, 3, 4, 5};
     
@@ -224,7 +224,7 @@ static int test_different_data_sizes() {
 /**
  * @brief Test tree with odd number of elements.
  */
-static int test_odd_number_elements() {
+static int test_odd_number_elements(void) {
     const char *data[7];
     size_t sizes[7];
     create_test_data((const char **)data, sizes, 7);
@@ -240,7 +240,7 @@ static int test_odd_number_elements() {
 /**
  * @brief Test tree consistency - same data should produce same tree.
  */
-static int test_tree_consistency() {
+static int test_tree_consistency(void) {
     const char *data[] = {"Test", "Data", "Hash", "Tree"};
     size_t sizes[] = {4, 4, 4, 4};
     
@@ -262,7 +262,7 @@ static int test_tree_consistency() {
 /**
  * @brief Test tree sensitivity - different data should produce different hashes.
  */
-static int test_tree_sensitivity() {
+static int test_tree_sensitivity(void) {
     const char *data1[] = {"Test", "Data"};
     const char *data2[] = {"Test", "Different"};
     size_t sizes[] = {4, 4};
@@ -286,7 +286,7 @@ static int test_tree_sensitivity() {
 /**
  * @brief Test with empty strings (valid but zero-length after the pointer).
  */
-static int test_empty_string_elements() {
+static int test_empty_string_elements(void) {
     // Note: We can't test truly empty strings because our validation 
     // requires size > 0, which is correct behavior
     const char *data[] = {"", "test"};
@@ -300,7 +300,7 @@ static int test_empty_string_elements() {
 /**
  * @brief Test with large dataset.
  */
-static int test_large_dataset() {
+static int test_large_dataset(void) {
     const size_t count = 100;
     const char **data = malloc(count * sizeof(char*));
     size_t *sizes = malloc(count * sizeof(size_t));
@@ -336,7 +336,7 @@ static int test_large_dataset() {
 /**
  * @brief Test memory management - ensure no leaks on normal operation.
  */
-static int test_memory_management() {
+static int test_memory_management(void) {
     // This test creates and destroys multiple trees to check for leaks
     for (int i = 0; i < 10; i++) {
         const char *data[] = {"Memory", "Test", "Data", "Item"};
@@ -352,7 +352,7 @@ static int test_memory_management() {
 /**
  * @brief Test various branching factors.
  */
-static int test_various_branching_factors() {
+static int test_various_branching_factors(void) {
     const char *data[8];
     size_t sizes[8];
     create_test_data((const char **)data, sizes, 8);
@@ -371,7 +371,7 @@ static int test_various_branching_factors() {
 /**
  * @brief Verify root hash for a known single element.
  */
-static int test_root_hash_single_element() {
+static int test_root_hash_single_element(void) {
     const char *data[] = {"Hello"};
     size_t sizes[] = {5};
 
@@ -394,7 +394,7 @@ static int test_root_hash_single_element() {
 /**
  * @brief Verify root hash for a known two element tree.
  */
-static int test_root_hash_two_elements() {
+static int test_root_hash_two_elements(void) {
     const char *data[] = {"Test", "Data"};
     size_t sizes[] = {4, 4};
 
@@ -417,7 +417,7 @@ static int test_root_hash_two_elements() {
 /**
  * @brief Verify root hash for a known four element tree.
  */
-static int test_root_hash_four_elements() {
+static int test_root_hash_four_elements(void) {
     const char *data[] = {"Hello", "World", "Merkle", "Tree"};
     size_t sizes[] = {5, 5, 6, 4};
 
@@ -440,7 +440,7 @@ static int test_root_hash_four_elements() {
 /**
  * @brief Validate root child count with large branching factor.
  */
-static int test_root_child_count_large_bf() {
+static int test_root_child_count_large_bf(void) {
     const char *data[5];
     size_t sizes[5];
     create_test_data((const char **)data, sizes, 5);
@@ -457,7 +457,7 @@ static int test_root_child_count_large_bf() {
 /**
  * @brief Verify that get_tree_hash returns the same value as the root hash.
  */
-static int test_get_tree_hash_api() {
+static int test_get_tree_hash_api(void) {
     const char *data[] = {"foo", "bar"};
     size_t sizes[] = {3, 3};
 
@@ -476,7 +476,7 @@ static int test_get_tree_hash_api() {
 /**
  * @brief Validate that leaf nodes maintain parent links and indices.
  */
-static int test_leaf_parent_links() {
+static int test_leaf_parent_links(void) {
     const char *data[4];
     size_t sizes[4];
     create_test_data((const char **)data, sizes, 4);
@@ -498,7 +498,7 @@ static int test_leaf_parent_links() {
 /**
  * @brief Ensure that input data is copied into leaf nodes.
  */
-static int test_leaf_data_copied() {
+static int test_leaf_data_copied(void) {
     const char *data[] = {"copy", "check"};
     size_t sizes[] = {4, 5};
 
@@ -517,7 +517,7 @@ static int test_leaf_data_copied() {
 /**
  * @brief Print test summary and return overall result.
  */
-static int print_test_summary() {
+static int print_test_summary(void) {
     printf("\n=== Test Summary ===\n");
     printf("Total tests: %d\n", total_tests);
     printf("Passed: %d\n", tests_passed);
@@ -531,7 +531,7 @@ static int print_test_summary() {
 /**
  * @brief Main test runner.
  */
-int main() {
+int main(void) {
     printf("Starting Merkle Tree Unit Tests\n");
     printf("================================\n\n");
     

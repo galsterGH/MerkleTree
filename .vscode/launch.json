@@ -39,8 +39,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/guyalster/Projects/Merkle/src",
-      "program": "/Users/guyalster/Projects/Merkle/src/build/Debug/outDebug"
+      "cwd": "/Users/guyalster/Projects/Merkle/tests",
+      "program": "/Users/guyalster/Projects/Merkle/tests/build/Debug/outDebug"
     }
   ]
 }
