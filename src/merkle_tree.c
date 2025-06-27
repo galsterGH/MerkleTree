@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "Merkle.h"
 #include "MerkleQueue.h"
@@ -351,7 +352,12 @@ static merkle_error_t build_tree_from_queue(queue_t *queue, merkle_tree_t *tree)
       
     /* Number of parent nodes to create for this level. Each parent will
      * combine up to @p branching_factor children. */
-    size_t full_nodes = (queue_size + branching_factor - 1)/branching_factor;
+    if(queue_size > SIZE_MAX - (branching_factor - 1)){
+      clean_up_next_level(&next_level, next_level_alloc_count);
+      return MERKLE_FAILED_TREE_BUILD;
+    }
+
+    size_t full_nodes = (queue_size + branching_factor - 1) / branching_factor;
     tree->levels++;
 
     if(IS_LEAF_NODES_LEVEL(tree_lvl)) {
@@ -588,7 +594,49 @@ merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder 
     }
   }
 
-  return result;
+return result;
+}
+
+merkle_error_t verify_proof(const merkle_proof_t *proof,
+                            const unsigned char expected_root[HASH_SIZE],
+                            const void *leaf_data, size_t leaf_size){
+
+    if(!proof || !expected_root || !leaf_data || leaf_size == 0){
+        return MERKLE_NULL_ARG;
+    }
+
+    unsigned char current_hash[HASH_SIZE];
+    if(hash_data_block(leaf_data, leaf_size, current_hash) != MERKLE_SUCCESS){
+        return MERKLE_BAD_ARG;
+    }
+
+    for(size_t lvl = 0; lvl < proof->path_length; ++lvl){
+        merkle_proof_item_t *item = proof->path[lvl];
+        if(!item){
+            return MERKLE_NULL_ARG;
+        }
+
+        SHA256_CTX ctx;
+        SHA256_Init(&ctx);
+
+        size_t sibling_idx = 0;
+        for(size_t i = 0; i < item->sibling_count + 1; ++i){
+            if(i == item->node_position){
+                SHA256_Update(&ctx, current_hash, HASH_SIZE);
+            } else {
+                SHA256_Update(&ctx, item->sibling_hashes[sibling_idx], HASH_SIZE);
+                sibling_idx++;
+            }
+        }
+
+        SHA256_Final(current_hash, &ctx);
+    }
+
+    if(memcmp(current_hash, expected_root, HASH_SIZE) == 0){
+        return MERKLE_SUCCESS;
+    }
+
+    return MERKLE_PROOF_INVALID;
 }
 
 merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_index, merkle_proof_t **proof){
@@ -612,11 +660,19 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
       THROW;
     }
 
-    result->path_length = tree->levels;
+    // Calculate proof path length by walking from the leaf to the root
+    size_t path_length = 0;
+    merkle_node_t *cursor = tree->leaves[leaf_index];
+    while (cursor && cursor->parent) {
+      path_length++;
+      cursor = cursor->parent;
+    }
+
+    result->path_length = path_length;
     result->leaf_index = leaf_index;
     result->branching_factor = tree->branching_factor;
 
-    ALLOC_AND_INIT_SIMPLE(result->path,tree->levels);
+    ALLOC_AND_INIT_SIMPLE(result->path, path_length);
 
     if(!result->path){
       ret = MERKLE_FAILED_MEM_ALLOC;
@@ -637,7 +693,7 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
           break;
         }
 
-        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes,(prt->child_count - 1)*HASH_SIZE);
+        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes, prt->child_count - 1);
         proof_item->sibling_count = prt->child_count - 1;
 
         ret = add_proof_path(node->parent,node,proof_item);
@@ -654,13 +710,9 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
 
   }CATCH();
 
-  for(size_t idx = 0; idx != tree->levels; ++idx){
+  for(size_t idx = 0; result && idx != result->path_length; ++idx){
     if(!result->path[idx]) {
       continue;
-    }
-
-    for(size_t j = 0; j < result->path[idx]->sibling_count; ++j){
-        MFree(result->path[idx]->sibling_hashes[j]);
     }
 
     MFree(result->path[idx]->sibling_hashes);
@@ -681,11 +733,11 @@ static merkle_error_t add_proof_path(merkle_node_t *parent, merkle_node_t *node,
           THROW;      
         }
         
-        for(size_t i = 0,j = 0; i < parent->child_count; ++i){
+        for(size_t i = 0, j = 0; i < parent->child_count; ++i){
           if(parent->children[i] != node){
-            memcpy(&(proof_item->sibling_hashes[0][j]),parent->children[i]->hash,HASH_SIZE);
+            memcpy(proof_item->sibling_hashes[j], parent->children[i]->hash, HASH_SIZE);
             j++;
-          }else{
+          } else {
             proof_item->node_position = i;
           }
         }
