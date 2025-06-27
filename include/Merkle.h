@@ -133,5 +133,22 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
  */
 merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
 
+/**
+ * @brief Verify a Merkle proof against a known root hash.
+ *
+ * Recomputes the hash chain from the supplied leaf data using the proof path
+ * and compares the resulting root hash to @p expected_root.
+ *
+ * @param proof         Pointer to the proof to verify.
+ * @param expected_root Expected root hash of the tree.
+ * @param leaf_data     Data contained in the proved leaf.
+ * @param leaf_size     Size of @p leaf_data in bytes.
+ * @return MERKLE_SUCCESS if the proof matches the root, MERKLE_PROOF_INVALID on
+ *         mismatch or an error code on invalid arguments.
+ */
+merkle_error_t verify_proof(const merkle_proof_t *proof,
+                            const unsigned char expected_root[HASH_SIZE],
+                            const void *leaf_data, size_t leaf_size);
+
 
 #endif // MERKLE_H

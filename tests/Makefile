@@ -6,11 +6,13 @@
 # Compiler and flags
 CC = clang
 CFLAGS = -Werror -std=c11 -g -O0 -Wno-deprecated-declarations -Wno-incompatible-pointer-types-discards-qualifiers -Wno-unused-parameter
-OPENSSL_ROOT = /opt/homebrew/Cellar/openssl@3/3.5.0
 
-# Include and library paths
-INCLUDES = -I../include -I$(OPENSSL_ROOT)/include
-LDFLAGS = -L$(OPENSSL_ROOT)/lib -lssl -lcrypto
+# Use pkg-config if available to find OpenSSL
+OPENSSL_CFLAGS ?= $(shell pkg-config --cflags openssl 2>/dev/null)
+OPENSSL_LIBS  ?= $(shell pkg-config --libs openssl 2>/dev/null)
+
+INCLUDES = -I../include $(OPENSSL_CFLAGS)
+LDFLAGS = $(OPENSSL_LIBS)
 
 # Source files
 SRC_DIR = ../src

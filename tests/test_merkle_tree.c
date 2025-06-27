@@ -765,6 +765,35 @@ static int test_proof_memory_management(void) {
 }
 
 /**
+ * @brief Test verifying generated proofs against the root hash.
+ */
+static int test_proof_verification(void) {
+    const char *data[] = {"A", "B", "C", "D"};
+    size_t sizes[] = {1, 1, 1, 1};
+
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+
+    unsigned char root[HASH_SIZE];
+    merkle_error_t rc = get_tree_hash(tree, root);
+    TEST_ASSERT(rc == MERKLE_SUCCESS, "Should get root hash");
+
+    merkle_proof_t *proof = NULL;
+    rc = generate_proof_from_index(tree, 2, &proof);
+    TEST_ASSERT(rc == MERKLE_SUCCESS && proof != NULL, "Proof generation");
+
+    rc = verify_proof(proof, root, data[2], sizes[2]);
+    TEST_ASSERT(rc == MERKLE_SUCCESS, "Valid proof should verify");
+
+    const char *bad = "X";
+    rc = verify_proof(proof, root, bad, 1);
+    TEST_ASSERT(rc == MERKLE_PROOF_INVALID, "Tampered data should fail");
+
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
  * @brief Test get_tree_hash with NULL tree parameter.
  */
 static int test_get_tree_hash_null_tree(void) {
@@ -1151,6 +1180,7 @@ int main(void) {
     RUN_TEST(test_proof_position_information);
     RUN_TEST(test_proof_generation_by_finder);
     RUN_TEST(test_proof_memory_management);
+    RUN_TEST(test_proof_verification);
     RUN_TEST(test_proof_generation_large_branching_factor);
     
     // New error and edge case tests - verified working tests only

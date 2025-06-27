@@ -9,6 +9,7 @@ A robust, n-ary Merkle Tree implementation in C with comprehensive testing and d
 - **Queue-based Construction**: Efficient bottom-up tree building algorithm
 - **Memory Safe**: Comprehensive error handling and memory management
 - **Opaque API**: Clean public interface with implementation details hidden
+- **Proof Verification**: Validate proofs against a known root hash
 - **Comprehensive Tests**: Full unit test suite with memory leak detection
 - **Documentation**: Complete Doxygen-generated API documentation
 

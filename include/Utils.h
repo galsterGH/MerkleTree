@@ -38,18 +38,12 @@
 #define ALLOC_AND_INIT_SIMPLE(name,count)\
     do{\
         name = MMalloc((count) * sizeof(*(name)));\
-        if(name){\
-            memset(name,0,(count) * sizeof(*(name)));\
-        }\
     }while(0)
 
 #define ALLOC_AND_INIT(T,name,count)\
     T* name = NULL;\
     do{\
         name = MMalloc((count) * sizeof(*(name)));\
-        if(name){\
-            memset(name,0,(count) * sizeof(*(name)));\
-        }\
     }while(0)
 
     
@@ -76,6 +70,7 @@ void merkle_init_signal_protection(void);
  * @brief Cleanup signal protection for current thread  
  */
 void merkle_cleanup_signal_protection(void);
+
 
 /**
  * @brief Safe memory access pattern that catches segfaults
