@@ -130,6 +130,21 @@ merkle_tree_t *ternary_tree = merkle_tree_create(data, sizes, count, 3);
 merkle_tree_t *wide_tree = merkle_tree_create(data, sizes, count, 8);
 ```
 
+### Real-World Example: Filesystem Verification
+
+An end-to-end example is available in [`examples/filesystem`](examples/filesystem).
+It builds a tree from files on disk, generates a proof for `file2.txt` and
+verifies it.
+
+To build and run:
+
+```bash
+cd examples/filesystem
+clang filesystem_example.c ../../src/merkle_tree.c ../../src/merkle_queue.c \
+      ../../src/merkle_utils.c -I../../include -lssl -lcrypto -o fs_example
+./fs_example
+```
+
 ### Error Handling
 
 ```c
