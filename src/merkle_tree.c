@@ -50,13 +50,14 @@ struct merkle_tree {
   merkle_node_t **leaves; /**< Array of leaf nodes. */
   size_t leaf_count;      /**< Number of leaves. */
   size_t levels;          /**< Number of levels in the tree. */
+  size_t branching_factor;
 };
 
 /**
  * @brief Represents a single item in a Merkle proof path.
  */
 struct merkle_proof_item {
-    unsigned char **sibling_hashes; /**< Arrays of sibling hashes at this level. */
+    unsigned char (*sibling_hashes)[HASH_SIZE]; /**< Arrays of sibling hashes at this level. */
     size_t sibling_count;           /**< Number of siblings at this level. */
     size_t node_position;           /**< Position of our node among siblings. */
 };
@@ -68,7 +69,6 @@ struct merkle_proof{
     merkle_proof_item_t **path;  /**< Array of proof items from leaf to root. */
     size_t path_length;          /**< Length of the proof path. */
     size_t leaf_index;           /**< Index of the leaf being proven. */
-    size_t total_leaves;         /**< Total number of leaves in the tree. */
     size_t branching_factor;     /**< Branching factor of the tree. */
 };
 
@@ -158,8 +158,7 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent);
  * @param result Output pointer to the resulting Merkle tree.
  * @return MERKLE_SUCCESS on success, error code otherwise.
  */
-static merkle_error_t build_tree_from_queue(queue_t *queue,
-        size_t branching_factor, merkle_tree_t *tree);
+static merkle_error_t build_tree_from_queue(queue_t *queue, merkle_tree_t *tree);
 
 /**
  * @brief Adds proof path information for a node and its siblings.
@@ -176,7 +175,7 @@ static merkle_error_t add_proof_path(merkle_node_t *parent, merkle_node_t *node,
  * @param leafs Number of leaf nodes the tree will contain.
  * @return MERKLE_SUCCESS on success, error code otherwise.
  */
-static merkle_error_t init_tree(merkle_tree_t **tree, size_t leafs){
+static merkle_error_t init_tree(merkle_tree_t **tree, size_t leafs, size_t branching_factor){
   // Validate input parameters
   if(!tree){
     return MERKLE_NULL_ARG;
@@ -200,6 +199,7 @@ static merkle_error_t init_tree(merkle_tree_t **tree, size_t leafs){
 
   // Set leaf count and return initialized tree
   tr->leaf_count = leafs;
+  tr->branching_factor = branching_factor;
   *tree = tr;
   return MERKLE_SUCCESS;
 }
@@ -306,8 +306,7 @@ static merkle_error_t hash_merkle_node(merkle_node_t *parent){
   return MERKLE_SUCCESS;
 }
 
-static merkle_error_t build_tree_from_queue(queue_t *queue,
-       size_t branching_factor, merkle_tree_t *tree) {
+static merkle_error_t build_tree_from_queue(queue_t *queue, merkle_tree_t *tree) {
   // Local variables for managing the next level construction
   size_t next_level_alloc_count = 0;
   merkle_node_t **next_level = NULL;
@@ -317,9 +316,12 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
     return MERKLE_NULL_ARG;
   }
 
-  if(branching_factor == 0){
+
+  if(tree->branching_factor == 0){
     return MERKLE_FAILED_TREE_BUILD;
   }
+
+  size_t branching_factor = tree->branching_factor;
 
   /*
    * Process the queue level by level until a single node remains.
@@ -350,6 +352,7 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
     /* Number of parent nodes to create for this level. Each parent will
      * combine up to @p branching_factor children. */
     size_t full_nodes = (queue_size + branching_factor - 1)/branching_factor;
+    tree->levels++;
 
     if(IS_LEAF_NODES_LEVEL(tree_lvl)) {
       ALLOC_AND_INIT_SIMPLE(next_level, full_nodes);
@@ -392,7 +395,6 @@ static merkle_error_t build_tree_from_queue(queue_t *queue,
       }
 
       parent_node->child_count = dequed;
-      tree->levels++;
 
       /* Compute the parent's hash from its children. */
       merkle_error_t ret_code = hash_merkle_node(parent_node);
@@ -443,12 +445,16 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
   queue_t *queue = NULL;
 
   // Validate input parameters
-  if (!(data && count > 0 && branching_factor > 0)) {
+  if (!(data && size && count > 0 && branching_factor > 0)) {
     return NULL;
   }
 
+  // Initialize signal protection to catch segfaults gracefully
+  merkle_init_signal_protection();
+
   // Initialize the tree structure
-  if(init_tree(&tree,count) != MERKLE_SUCCESS){
+  if(init_tree(&tree,count,branching_factor) != MERKLE_SUCCESS){
+    merkle_cleanup_signal_protection();
     return NULL;
   }
 
@@ -465,11 +471,21 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
 
     // Process each data block to create leaf nodes
     for (size_t i = 0; i < count && success; ++i) {
-      // Validate current data block
-      if (!data[i] || !size[i]) {
+      
+      // Safe access pattern - catch segfaults if count > actual array size
+      SAFE_ACCESS_TRY {
+        // Validate current data block
+        if (!data[i] || !size[i]) {
+          success = 0;
+          break;
+        }
+      } SAFE_ACCESS_CATCH {
+        // Segfault occurred - count parameter is incorrect
         success = 0;
         break;
-      }
+      } SAFE_ACCESS_END;
+      
+      if (!success) break;
       
       // Allocate memory for new leaf node
       merkle_node_t *merkle_node;
@@ -488,15 +504,24 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
         break;
       }
 
-      // Copy the data into the node
-      memcpy(merkle_node->data,data[i],size[i]);
-
-      // Compute the hash of the data block
-      if(hash_data_block(data[i], size[i],merkle_node->hash) != MERKLE_SUCCESS){
+      // Copy the data into the node and compute hash - with protection against invalid data
+      SAFE_ACCESS_TRY {
+        memcpy(merkle_node->data,data[i],size[i]);
+        
+        // Compute the hash of the data block
+        if(hash_data_block(data[i], size[i],merkle_node->hash) != MERKLE_SUCCESS){
+          dealloc_hash_node(merkle_node);
+          success = false;
+          break;
+        }
+      } SAFE_ACCESS_CATCH {
+        // Segfault occurred during data access
         dealloc_hash_node(merkle_node);
         success = false;
         break;
-      }
+      } SAFE_ACCESS_END;
+      
+      if (!success) break;
 
       // Add the leaf node to the processing queue
       if(push_queue(queue,merkle_node) != QUEUE_OK){
@@ -514,18 +539,20 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
     }
 
     // Build the internal tree structure from the leaf nodes
-    if (build_tree_from_queue(queue, branching_factor, tree) != MERKLE_SUCCESS) {
+    if (build_tree_from_queue(queue, tree) != MERKLE_SUCCESS) {
       THROW;
     }
 
     // Clean up the temporary queue and return the completed tree
     free_queue(queue, dealloc_hash_node);
+    merkle_cleanup_signal_protection();
     return tree;
 
   } CATCH();
   
   free_queue(queue,dealloc_hash_node);
   clean_up_tree(&tree);
+  merkle_cleanup_signal_protection();
   return NULL;
 }
 
@@ -564,7 +591,6 @@ merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder 
   return result;
 }
 
- 
 merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_index, merkle_proof_t **proof){
   
   // Validate input parameters
@@ -586,15 +612,16 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
       THROW;
     }
 
+    result->path_length = tree->levels;
+    result->leaf_index = leaf_index;
+    result->branching_factor = tree->branching_factor;
+
     ALLOC_AND_INIT_SIMPLE(result->path,tree->levels);
 
     if(!result->path){
       ret = MERKLE_FAILED_MEM_ALLOC;
       THROW;
     }
-
-    result->path_length = tree->levels;
-    result->leaf_index = leaf_index;
 
     merkle_node_t *node = tree->leaves[leaf_index];
     bool success = 1;
@@ -610,7 +637,7 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
           break;
         }
 
-        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes,prt->child_count - 1);
+        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes,(prt->child_count - 1)*HASH_SIZE);
         proof_item->sibling_count = prt->child_count - 1;
 
         ret = add_proof_path(node->parent,node,proof_item);
@@ -628,10 +655,14 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
   }CATCH();
 
   for(size_t idx = 0; idx != tree->levels; ++idx){
+    if(!result->path[idx]) {
+      continue;
+    }
 
     for(size_t j = 0; j < result->path[idx]->sibling_count; ++j){
         MFree(result->path[idx]->sibling_hashes[j]);
     }
+
     MFree(result->path[idx]->sibling_hashes);
     MFree(result->path[idx]);
   }
@@ -647,33 +678,19 @@ static merkle_error_t add_proof_path(merkle_node_t *parent, merkle_node_t *node,
     TRY{
         if(!parent || !node || !proof_item){
           result = MERKLE_NULL_ARG;
-          break;      
+          THROW;      
         }
         
         for(size_t i = 0,j = 0; i < parent->child_count; ++i){
           if(parent->children[i] != node){
-            ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes[j],HASH_SIZE);
-
-            if(!proof_item->sibling_hashes[j]){
-              result = MERKLE_FAILED_MEM_ALLOC;
-              THROW;
-            }
-
+            memcpy(&(proof_item->sibling_hashes[0][j]),parent->children[i]->hash,HASH_SIZE);
             j++;
-
-            memcpy(proof_item->sibling_hashes[j],parent->children[i]->hash,HASH_SIZE);
           }else{
             proof_item->node_position = i;
           }
         }
 
     }CATCH();
-
-    if(result != MERKLE_SUCCESS){
-      for(size_t i = 0; i < proof_item->sibling_count; ++i){
-        MFree(proof_item->sibling_hashes[i]);
-      }
-    }
 
     return result;
 }

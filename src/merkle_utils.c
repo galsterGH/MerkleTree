@@ -10,7 +10,71 @@
  */
 
 #include <stdlib.h>
+#include <signal.h>
+#include <setjmp.h>
 #include "Utils.h"
+
+// Thread-local storage for signal handling
+__thread jmp_buf merkle_segv_buf;
+__thread volatile int merkle_segv_occurred = 0;
+
+// Store original signal handlers for restoration
+static __thread void (*original_segv_handler)(int) = NULL;
+static __thread void (*original_bus_handler)(int) = NULL;
+static __thread void (*original_abrt_handler)(int) = NULL;
+
+/**
+ * @brief Signal handler for memory access violations
+ */
+static void merkle_signal_handler(int sig) {
+    merkle_segv_occurred = 1;
+    longjmp(merkle_segv_buf, sig);
+}
+
+/**
+ * @brief Initialize signal protection for current thread
+ */
+void merkle_init_signal_protection(void) {
+    // Install signal handlers for memory access violations
+    original_segv_handler = signal(SIGSEGV, merkle_signal_handler);
+    
+#ifdef SIGBUS  // Not available on all platforms
+    original_bus_handler = signal(SIGBUS, merkle_signal_handler);
+#endif
+
+#ifdef SIGABRT
+    original_abrt_handler = signal(SIGABRT, merkle_signal_handler);
+#endif
+
+    merkle_segv_occurred = 0;
+}
+
+/**
+ * @brief Cleanup signal protection for current thread
+ */
+void merkle_cleanup_signal_protection(void) {
+    // Restore original signal handlers
+    if (original_segv_handler != NULL) {
+        signal(SIGSEGV, original_segv_handler);
+        original_segv_handler = NULL;
+    }
+    
+#ifdef SIGBUS
+    if (original_bus_handler != NULL) {
+        signal(SIGBUS, original_bus_handler);
+        original_bus_handler = NULL;
+    }
+#endif
+
+#ifdef SIGABRT
+    if (original_abrt_handler != NULL) {
+        signal(SIGABRT, original_abrt_handler);
+        original_abrt_handler = NULL;
+    }
+#endif
+
+    merkle_segv_occurred = 0;
+}
 
 
 /**

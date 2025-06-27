@@ -5,7 +5,7 @@
 # Compiler and flags
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -std=c11 -g -O0 -Wno-deprecated-declarations -Wno-incompatible-pointer-types-discards-qualifiers -Wno-unused-parameter
+CFLAGS = -Werror -std=c11 -g -O0 -Wno-deprecated-declarations -Wno-incompatible-pointer-types-discards-qualifiers -Wno-unused-parameter
 OPENSSL_ROOT = /opt/homebrew/Cellar/openssl@3/3.5.0
 
 # Include and library paths

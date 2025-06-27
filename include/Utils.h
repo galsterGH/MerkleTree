@@ -14,6 +14,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @def likely(x)
@@ -45,7 +46,7 @@
 #define ALLOC_AND_INIT(T,name,count)\
     T* name = NULL;\
     do{\
-        MMalloc((count) * sizeof(*(name)));\
+        name = MMalloc((count) * sizeof(*(name)));\
         if(name){\
             memset(name,0,(count) * sizeof(*(name)));\
         }\
@@ -55,6 +56,43 @@
 #define TRY do
 #define CATCH() while(0)
 #define THROW break
+
+// Cross-platform signal handling for graceful failure
+#include <signal.h>
+#include <setjmp.h>
+
+/**
+ * @brief Thread-local storage for signal handling
+ */
+extern __thread jmp_buf merkle_segv_buf;
+extern __thread volatile int merkle_segv_occurred;
+
+/**
+ * @brief Initialize signal protection for current thread
+ */
+void merkle_init_signal_protection(void);
+
+/**
+ * @brief Cleanup signal protection for current thread  
+ */
+void merkle_cleanup_signal_protection(void);
+
+/**
+ * @brief Safe memory access pattern that catches segfaults
+ * Usage: SAFE_ACCESS_TRY { access_memory(); } SAFE_ACCESS_CATCH { handle_error(); }
+ */
+#define SAFE_ACCESS_TRY \
+    do { \
+        merkle_segv_occurred = 0; \
+        if (setjmp(merkle_segv_buf) == 0) {
+
+#define SAFE_ACCESS_CATCH \
+        } else { \
+            merkle_segv_occurred = 1;
+
+#define SAFE_ACCESS_END \
+        } \
+    } while(0)
 
 /**
  * @def MMalloc(x)

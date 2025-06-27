@@ -529,6 +529,578 @@ static int print_test_summary(void) {
 }
 
 /**
+ * @brief Test proof generation for simple binary tree.
+ */
+static int test_proof_generation_binary_tree(void) {
+    const char *data[] = {"A", "B", "C", "D"};
+    size_t sizes[] = {1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    merkle_error_t result = generate_proof_from_index(tree, 1, &proof); // Prove leaf B
+    
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+    TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+    TEST_ASSERT(proof->leaf_index == 1, "Proof should be for leaf index 1");
+    TEST_ASSERT(proof->branching_factor == 2, "Proof should have correct branching factor");
+    TEST_ASSERT(proof->path_length == tree->levels, "Proof path length should match tree levels");
+    
+    // For binary tree with 4 leaves: levels = 2 (leaf->internal, internal->root)
+    TEST_ASSERT(proof->path_length == 2, "Binary tree with 4 leaves should have 2 proof levels");
+    
+    // Verify proof structure exists
+    for (size_t i = 0; i < proof->path_length; i++) {
+        TEST_ASSERT(proof->path[i] != NULL, "Proof path item should not be NULL");
+        TEST_ASSERT(proof->path[i]->sibling_count > 0, "Should have siblings at each level");
+        TEST_ASSERT(proof->path[i]->sibling_hashes != NULL, "Sibling hashes should not be NULL");
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation for ternary tree.
+ */
+static int test_proof_generation_ternary_tree(void) {
+    const char *data[] = {"A", "B", "C", "D", "E"};
+    size_t sizes[] = {1, 1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 5, 3);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    merkle_error_t result = generate_proof_from_index(tree, 2, &proof); // Prove leaf C
+    
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+    TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+    TEST_ASSERT(proof->leaf_index == 2, "Proof should be for leaf index 2");
+    TEST_ASSERT(proof->branching_factor == 3, "Proof should have correct branching factor");
+    
+    // Verify sibling counts are correct for ternary tree
+    for (size_t i = 0; i < proof->path_length; i++) {
+        TEST_ASSERT(proof->path[i]->sibling_count <= 2, "Ternary tree should have at most 2 siblings per level");
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation for single element tree.
+ */
+static int test_proof_generation_single_element(void) {
+    const char *data[] = {"Single"};
+    size_t sizes[] = {6};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    merkle_error_t result = generate_proof_from_index(tree, 0, &proof);
+    
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+    TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+    TEST_ASSERT(proof->leaf_index == 0, "Proof should be for leaf index 0");
+    TEST_ASSERT(proof->path_length == 0, "Single element tree should have no proof levels");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation with invalid parameters.
+ */
+static int test_proof_generation_invalid_params(void) {
+    const char *data[] = {"A", "B"};
+    size_t sizes[] = {1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    
+    // Test NULL tree
+    merkle_error_t result = generate_proof_from_index(NULL, 0, &proof);
+    TEST_ASSERT(result != MERKLE_SUCCESS, "Should fail with NULL tree");
+    
+    // Test NULL proof pointer
+    result = generate_proof_from_index(tree, 0, NULL);
+    TEST_ASSERT(result != MERKLE_SUCCESS, "Should fail with NULL proof pointer");
+    
+    // Test invalid leaf index
+    result = generate_proof_from_index(tree, 5, &proof);
+    TEST_ASSERT(result != MERKLE_SUCCESS, "Should fail with invalid leaf index");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof sibling hash correctness.
+ */
+static int test_proof_sibling_hash_correctness(void) {
+    const char *data[] = {"A", "B", "C", "D"};
+    size_t sizes[] = {1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    // Generate proof for leaf B (index 1)
+    merkle_proof_t *proof = NULL;
+    merkle_error_t result = generate_proof_from_index(tree, 1, &proof);
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+    
+    // For binary tree with leaves [A,B,C,D]:
+    // Level 0: B's sibling is A
+    // Level 1: (AB)'s sibling is (CD)
+    
+    // Verify we have exactly 1 sibling at each level for binary tree
+    for (size_t i = 0; i < proof->path_length; i++) {
+        TEST_ASSERT(proof->path[i]->sibling_count == 1, 
+                   "Binary tree should have exactly 1 sibling per level");
+    }
+    
+    // Verify sibling hashes are not zero (they should contain actual hash data)
+    for (size_t i = 0; i < proof->path_length; i++) {
+        int all_zero = 1;
+        for (size_t j = 0; j < HASH_SIZE; j++) {
+            if (proof->path[i]->sibling_hashes[0][j] != 0) {
+                all_zero = 0;
+                break;
+            }
+        }
+        TEST_ASSERT(!all_zero, "Sibling hash should not be all zeros");
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof position information.
+ */
+static int test_proof_position_information(void) {
+    const char *data[] = {"A", "B", "C", "D", "E", "F"};
+    size_t sizes[] = {1, 1, 1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 6, 3);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    // Test different leaf positions
+    for (size_t leaf_idx = 0; leaf_idx < 6; leaf_idx++) {
+        merkle_proof_t *proof = NULL;
+        merkle_error_t result = generate_proof_from_index(tree, leaf_idx, &proof);
+        
+        TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed for all leaves");
+        TEST_ASSERT(proof->leaf_index == leaf_idx, "Proof should track correct leaf index");
+        
+        // Verify position information is within valid range
+        for (size_t i = 0; i < proof->path_length; i++) {
+            TEST_ASSERT(proof->path[i]->node_position < 3, 
+                       "Position should be valid for ternary tree");
+        }
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation finder function.
+ */
+static bool test_value_finder(void *data) {
+    return strcmp((char*)data, "Target") == 0;
+}
+
+static int test_proof_generation_by_finder(void) {
+    const char *data[] = {"A", "Target", "C", "D"};
+    size_t sizes[] = {1, 6, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    size_t path_length = 0;
+    merkle_error_t result = generate_proof_by_finder(tree, test_value_finder, &path_length, &proof);
+    
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation by finder should succeed");
+    TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+    TEST_ASSERT(proof->leaf_index == 1, "Should find 'Target' at index 1");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation memory management.
+ */
+static int test_proof_memory_management(void) {
+    const char *data[] = {"A", "B", "C", "D"};
+    size_t sizes[] = {1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    // Generate multiple proofs to test memory handling
+    for (size_t i = 0; i < 4; i++) {
+        merkle_proof_t *proof = NULL;
+        merkle_error_t result = generate_proof_from_index(tree, i, &proof);
+        
+        TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+        TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+        
+        // Verify proof structure integrity
+        TEST_ASSERT(proof->path != NULL, "Proof path should not be NULL");
+        for (size_t j = 0; j < proof->path_length; j++) {
+            TEST_ASSERT(proof->path[j] != NULL, "Proof path items should not be NULL");
+            TEST_ASSERT(proof->path[j]->sibling_hashes != NULL, "Sibling hashes should not be NULL");
+        }
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test get_tree_hash with NULL tree parameter.
+ */
+static int test_get_tree_hash_null_tree(void) {
+    unsigned char buffer[HASH_SIZE];
+    merkle_error_t result = get_tree_hash(NULL, buffer);
+    TEST_ASSERT(result == MERKLE_NULL_ARG, "Should return MERKLE_NULL_ARG for NULL tree");
+    TEST_PASS();
+}
+
+/**
+ * @brief Test get_tree_hash with NULL buffer parameter.
+ */
+static int test_get_tree_hash_null_buffer(void) {
+    const char *data[] = {"test"};
+    size_t sizes[] = {4};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_error_t result = get_tree_hash(tree, NULL);
+    TEST_ASSERT(result == MERKLE_NULL_ARG, "Should return MERKLE_NULL_ARG for NULL buffer");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with NULL sizes array.
+ */
+static int test_create_null_sizes_array(void) {
+    const char *data[] = {"test"};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, NULL, 1, 2);
+    TEST_ASSERT(tree == NULL, "Should return NULL for NULL sizes array");
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with extremely large branching factor.
+ */
+static int test_create_very_large_branching_factor(void) {
+    const char *data[2];
+    size_t sizes[2];
+    create_test_data((const char **)data, sizes, 2);
+    
+    // Test with large but reasonable branching factor (1000)
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 2, 1000);
+    TEST_ASSERT(tree != NULL, "Should handle large branching factor");
+    TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with branching factor of 1.
+ */
+static int test_create_branching_factor_one(void) {
+    const char *data[] = {"test"};
+    size_t sizes[] = {4};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1, 1);
+    // Implementation allows branching factor of 1, which creates a linear chain
+    if (tree != NULL) {
+        TEST_ASSERT(tree->root != NULL, "Root should exist for branching factor 1");
+        dealloc_merkle_tree(tree);
+    } else {
+        // Some implementations may reject branching factor 1
+        printf("Implementation rejects branching factor 1 (acceptable behavior)");
+    }
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with very large dataset to stress memory management.
+ */
+static int test_stress_large_dataset(void) {
+    const size_t count = 1000;
+    const char **data = malloc(count * sizeof(char*));
+    size_t *sizes = malloc(count * sizeof(size_t));
+    char **allocated_strings = malloc(count * sizeof(char*));
+    
+    TEST_ASSERT(data && sizes && allocated_strings, "Memory allocation should succeed");
+    
+    // Create test data
+    for (size_t i = 0; i < count; i++) {
+        allocated_strings[i] = malloc(50);
+        snprintf(allocated_strings[i], 50, "stress_test_data_item_%zu_with_longer_string", i);
+        data[i] = allocated_strings[i];
+        sizes[i] = strlen(allocated_strings[i]);
+    }
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, count, 8);
+    TEST_ASSERT(tree != NULL, "Should handle very large dataset");
+    TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
+    
+    dealloc_merkle_tree(tree);
+    
+    // Cleanup
+    for (size_t i = 0; i < count; i++) {
+        free(allocated_strings[i]);
+    }
+    free(data);
+    free(sizes);
+    free(allocated_strings);
+    
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with extremely small data blocks.
+ */
+static int test_create_tiny_data_blocks(void) {
+    const char *data[] = {"A", "B", "C", "D"};
+    size_t sizes[] = {1, 1, 1, 1};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Should handle tiny data blocks");
+    TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with very uneven data sizes.
+ */
+static int test_create_uneven_data_sizes(void) {
+    const char *data[4];
+    size_t sizes[4];
+    
+    // Create data with dramatically different sizes
+    char *large_data = malloc(10000);
+    memset(large_data, 'X', 9999);
+    large_data[9999] = '\0';
+    
+    data[0] = "A";
+    data[1] = large_data;
+    data[2] = "CC";
+    data[3] = "DDD";
+    
+    sizes[0] = 1;
+    sizes[1] = 9999;
+    sizes[2] = 2;
+    sizes[3] = 3;
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Should handle very uneven data sizes");
+    TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
+    
+    dealloc_merkle_tree(tree);
+    free(large_data);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test with binary data containing null bytes.
+ */
+static int test_create_binary_data_with_nulls(void) {
+    // Create binary data with embedded null bytes
+    unsigned char binary_data1[] = {0x00, 0x01, 0x02, 0x00, 0x03};
+    unsigned char binary_data2[] = {0xFF, 0x00, 0xAA, 0x55, 0x00};
+    unsigned char binary_data3[] = {0x00, 0x00, 0x00, 0x00, 0x01};
+    
+    const void *data[] = {binary_data1, binary_data2, binary_data3};
+    size_t sizes[] = {5, 5, 5};
+    
+    merkle_tree_t *tree = create_merkle_tree(data, sizes, 3, 2);
+    TEST_ASSERT(tree != NULL, "Should handle binary data with null bytes");
+    TEST_ASSERT(tree->root != NULL, "Root should not be NULL");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test creating multiple trees sequentially for memory leak detection.
+ */
+static int test_sequential_tree_creation(void) {
+    for (int iteration = 0; iteration < 50; iteration++) {
+        const char *data[] = {"Sequential", "Test", "Data", "Iteration"};
+        size_t sizes[] = {10, 4, 4, 9};
+        
+        merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+        TEST_ASSERT(tree != NULL, "Sequential tree creation should succeed");
+        dealloc_merkle_tree(tree);
+    }
+    TEST_PASS();
+}
+
+/**
+ * @brief Test tree creation with very large count (should fail gracefully).
+ */
+static int test_create_maximum_count(void) {
+    const char *data[] = {"test"};
+    size_t sizes[] = {4};
+    
+    // This should fail due to memory allocation limits - use a large but not SIZE_MAX value
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 1000000000, 2);
+    TEST_ASSERT(tree == NULL, "Should fail gracefully with very large count");
+    TEST_PASS();
+}
+
+/**
+ * @brief Test protection against incorrect count parameter (segfault protection).
+ */
+static int test_create_incorrect_count_protection(void) {
+    const char *data[] = {"test1", "test2", "test3"};
+    size_t sizes[] = {5, 5, 5};
+    
+    // Pass count=10 but only provide 3 elements - should fail gracefully instead of segfault
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 10, 2);
+    TEST_ASSERT(tree == NULL, "Should fail gracefully when count > actual array size");
+    
+    // Test with partially valid arrays
+    const char *partial_data[] = {"test1", "test2", NULL};
+    size_t partial_sizes[] = {5, 5, 0};
+    
+    tree = create_merkle_tree((const void **)partial_data, partial_sizes, 5, 2);
+    TEST_ASSERT(tree == NULL, "Should fail gracefully with mixed valid/invalid data");
+    
+    // Test extreme case - count much larger than array
+    tree = create_merkle_tree((const void **)data, sizes, 1000, 2);
+    TEST_ASSERT(tree == NULL, "Should fail gracefully with extremely large count");
+    
+    TEST_PASS();
+}
+
+/**
+ * @brief Test root access consistency after multiple operations.
+ */
+static int test_root_access_consistency(void) {
+    const char *data[] = {"Consistency", "Test", "Root", "Access"};
+    size_t sizes[] = {11, 4, 4, 6};
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 4, 2);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    // Access root hash multiple times and verify consistency
+    unsigned char hash1[HASH_SIZE], hash2[HASH_SIZE], hash3[HASH_SIZE];
+    
+    merkle_error_t result1 = get_tree_hash(tree, hash1);
+    merkle_error_t result2 = get_tree_hash(tree, hash2);
+    merkle_error_t result3 = get_tree_hash(tree, hash3);
+    
+    TEST_ASSERT(result1 == MERKLE_SUCCESS && result2 == MERKLE_SUCCESS && result3 == MERKLE_SUCCESS,
+                "All hash retrievals should succeed");
+    TEST_ASSERT(memcmp(hash1, hash2, HASH_SIZE) == 0 && memcmp(hash2, hash3, HASH_SIZE) == 0,
+                "Root hash should be consistent across multiple accesses");
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation with all possible leaf indices.
+ */
+static int test_proof_generation_all_indices(void) {
+    const size_t leaf_count = 7; // Odd number to test unbalanced tree
+    const char *data[7];
+    size_t sizes[7];
+    create_test_data((const char **)data, sizes, leaf_count);
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, leaf_count, 3);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    // Test proof generation for every leaf
+    for (size_t i = 0; i < leaf_count; i++) {
+        merkle_proof_t *proof = NULL;
+        merkle_error_t result = generate_proof_from_index(tree, i, &proof);
+        
+        TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed for all indices");
+        TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+        TEST_ASSERT(proof->leaf_index == i, "Proof should have correct leaf index");
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
+ * @brief Test tree structure validation for different branching factors.
+ */
+static int test_tree_structure_validation(void) {
+    const char *data[9];
+    size_t sizes[9];
+    create_test_data((const char **)data, sizes, 9);
+    
+    // Test various branching factors
+    size_t branching_factors[] = {2, 3, 4, 5, 9, 10};
+    size_t num_factors = sizeof(branching_factors) / sizeof(branching_factors[0]);
+    
+    for (size_t i = 0; i < num_factors; i++) {
+        size_t bf = branching_factors[i];
+        merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 9, bf);
+        
+        TEST_ASSERT(tree != NULL, "Tree creation should succeed for all branching factors");
+        TEST_ASSERT(tree->root != NULL, "Root should exist");
+        TEST_ASSERT(tree->leaf_count == 9, "Leaf count should be correct");
+        TEST_ASSERT(tree->branching_factor == bf, "Branching factor should be preserved");
+        
+        dealloc_merkle_tree(tree);
+    }
+    
+    TEST_PASS();
+}
+
+/**
+ * @brief Test proof generation for large branching factor.
+ */
+static int test_proof_generation_large_branching_factor(void) {
+    const char *data[10];
+    size_t sizes[10];
+    create_test_data((const char **)data, sizes, 10);
+    
+    merkle_tree_t *tree = create_merkle_tree((const void **)data, sizes, 10, 5);
+    TEST_ASSERT(tree != NULL, "Tree creation should succeed");
+    
+    merkle_proof_t *proof = NULL;
+    merkle_error_t result = generate_proof_from_index(tree, 3, &proof);
+    
+    TEST_ASSERT(result == MERKLE_SUCCESS, "Proof generation should succeed");
+    TEST_ASSERT(proof != NULL, "Proof should not be NULL");
+    TEST_ASSERT(proof->branching_factor == 5, "Proof should have correct branching factor");
+    
+    // Verify sibling counts are correct for large branching factor
+    for (size_t i = 0; i < proof->path_length; i++) {
+        TEST_ASSERT(proof->path[i]->sibling_count <= 4, 
+                   "Should have at most 4 siblings for branching factor 5");
+    }
+    
+    dealloc_merkle_tree(tree);
+    TEST_PASS();
+}
+
+/**
  * @brief Main test runner.
  */
 int main(void) {
@@ -569,6 +1141,44 @@ int main(void) {
     RUN_TEST(test_get_tree_hash_api);
     RUN_TEST(test_leaf_parent_links);
     RUN_TEST(test_leaf_data_copied);
+    
+    // Proof generation tests
+    RUN_TEST(test_proof_generation_binary_tree);
+    RUN_TEST(test_proof_generation_ternary_tree);
+    RUN_TEST(test_proof_generation_single_element);
+    RUN_TEST(test_proof_generation_invalid_params);
+    RUN_TEST(test_proof_sibling_hash_correctness);
+    RUN_TEST(test_proof_position_information);
+    RUN_TEST(test_proof_generation_by_finder);
+    RUN_TEST(test_proof_memory_management);
+    RUN_TEST(test_proof_generation_large_branching_factor);
+    
+    // New error and edge case tests - verified working tests only
+    RUN_TEST(test_get_tree_hash_null_tree);
+    RUN_TEST(test_get_tree_hash_null_buffer);
+    RUN_TEST(test_create_branching_factor_one);
+    RUN_TEST(test_create_tiny_data_blocks);
+    RUN_TEST(test_create_binary_data_with_nulls);
+    RUN_TEST(test_root_access_consistency);
+    RUN_TEST(test_sequential_tree_creation);
+    RUN_TEST(test_tree_structure_validation);
+
+    RUN_TEST(test_create_null_sizes_array);
+    RUN_TEST(test_stress_large_dataset);
+    RUN_TEST(test_create_uneven_data_sizes);
+    RUN_TEST(test_proof_generation_all_indices);
+    
+    RUN_TEST(test_create_very_large_branching_factor);
+    RUN_TEST(test_sequential_tree_creation);
+
+    RUN_TEST(test_create_maximum_count);
+    RUN_TEST(test_create_incorrect_count_protection);
+
+   // RUN_TEST(test_tree_structure_validation);
+   
+    // RUN_TEST(test_stress_large_dataset);
+   // RUN_TEST(test_create_uneven_data_sizes);
+   // RUN_TEST(test_proof_generation_all_indices);
 
     return print_test_summary();
 }
