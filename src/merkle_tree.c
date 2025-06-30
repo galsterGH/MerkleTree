@@ -663,7 +663,7 @@ static merkle_error_t generate_proof(merkle_tree_t *const tree, size_t leaf_inde
           break;
         }
 
-        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes,(prt->child_count - 1)*HASH_SIZE);
+        ALLOC_AND_INIT_SIMPLE(proof_item->sibling_hashes, prt->child_count - 1);
         proof_item->sibling_count = prt->child_count - 1;
 
         ret = add_proof_path(node->parent,node,proof_item);
@@ -683,10 +683,6 @@ static merkle_error_t generate_proof(merkle_tree_t *const tree, size_t leaf_inde
   for(size_t idx = 0; idx != tree->levels; ++idx){
     if(!result->path[idx]) {
       continue;
-    }
-
-    for(size_t j = 0; j < result->path[idx]->sibling_count; ++j){
-        MFree(result->path[idx]->sibling_hashes[j]);
     }
 
     MFree(result->path[idx]->sibling_hashes);
