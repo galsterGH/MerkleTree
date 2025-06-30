@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 #include "MerkleQueue.h"
-#include "Utils.h"
+#include "merkle_utils.h"
 
 /**
  * @brief Returns the minimum of two values.

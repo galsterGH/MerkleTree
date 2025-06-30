@@ -17,11 +17,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "Merkle.h"
 #include "MerkleQueue.h"
-#include "Utils.h"
-#include <stdbool.h>
+#include "merkle_utils.h"
+#include "locking.h"
 
 
 /** True if there is only one element left in the queue. */
@@ -46,6 +47,7 @@ typedef struct merkle_node {
  * @brief Represents a Merkle tree.
  */
 struct merkle_tree {
+  rw_lock_t lock;
   merkle_node_t *root;    /**< Root node of the tree. */
   merkle_node_t **leaves; /**< Array of leaf nodes. */
   size_t leaf_count;      /**< Number of leaves. */
@@ -95,7 +97,7 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
  * @param copy_into Buffer to copy the hash into (must be HASH_SIZE bytes).
  * @return MERKLE_SUCCESS on success, error code on failure.
  */
-merkle_error_t get_tree_hash(const merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
+merkle_error_t get_tree_hash(merkle_tree_t * const tree, unsigned char copy_into[HASH_SIZE]);
 
 /**
  * @brief Generates a Merkle proof for a leaf at the specified index.
@@ -105,7 +107,7 @@ merkle_error_t get_tree_hash(const merkle_tree_t *tree, unsigned char copy_into[
  * @param path_length Pointer to store the length of the proof path.
  * @return MERKLE_SUCCESS on success, error code on failure.
  */
-merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_index, merkle_proof_t **proof);
+merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof);
 
 /**
  * @brief Generates a Merkle proof for a leaf found using a custom finder function.
@@ -114,7 +116,7 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
  * @param path_length Pointer to store the length of the proof path.
  * @return Pointer to the generated proof on success, NULL on failure.
  */
- merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
+ merkle_error_t generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
 
 /**
  * @brief Recursively deallocates a Merkle tree node and its children.
@@ -169,6 +171,8 @@ static merkle_error_t build_tree_from_queue(queue_t *queue, merkle_tree_t *tree)
  */
 static merkle_error_t add_proof_path(merkle_node_t *parent, merkle_node_t *node, merkle_proof_item_t *proof_item);
 
+static merkle_error_t generate_proof(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof);
+
 /**
  * @brief Initializes a new Merkle tree structure.
  * @param tree Pointer to tree pointer to initialize.
@@ -200,6 +204,7 @@ static merkle_error_t init_tree(merkle_tree_t **tree, size_t leafs, size_t branc
   // Set leaf count and return initialized tree
   tr->leaf_count = leafs;
   tr->branching_factor = branching_factor;
+  RW_LOCK_INIT(&tr->lock);
   *tree = tr;
   return MERKLE_SUCCESS;
 }
@@ -254,6 +259,7 @@ static void clean_up_tree(merkle_tree_t **tree_ptr) {
     return;
   }
 
+  RW_DESTROY_LOCK(&(*tree_ptr)->lock);
   // Free the leaves array and tree structure
   MFree((*tree_ptr)->leaves);
   MFree(*tree_ptr);
@@ -459,6 +465,7 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
   }
 
   TRY{
+
     // Initialize variables for tree construction
     size_t leaf_idx = 0;
     queue = init_queue();
@@ -468,7 +475,6 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
     }
 
     bool success = 1;
-
     // Process each data block to create leaf nodes
     for (size_t i = 0; i < count && success; ++i) {
       
@@ -529,7 +535,6 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
         success = false;
         break;
       }
-
       // Store reference to the leaf node in the tree
       (tree->leaves)[leaf_idx++] = merkle_node;
     }
@@ -537,11 +542,15 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
     if(!success){
       THROW;
     }
-
+    
+    RW_WRITE_LOCK(&tree->lock);
     // Build the internal tree structure from the leaf nodes
     if (build_tree_from_queue(queue, tree) != MERKLE_SUCCESS) {
+      RW_WRITE_UNLOCK(&tree->lock);
       THROW;
     }
+
+    RW_WRITE_UNLOCK(&tree->lock);
 
     // Clean up the temporary queue and return the completed tree
     free_queue(queue, dealloc_hash_node);
@@ -556,23 +565,27 @@ merkle_tree_t *create_merkle_tree(const void **data, const size_t *size,
   return NULL;
 }
 
-merkle_error_t get_tree_hash(const merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]) {
+merkle_error_t get_tree_hash(merkle_tree_t * const tree, unsigned char copy_into[HASH_SIZE]) {
   // Validate input parameters
   if (!tree || !copy_into) {
     return MERKLE_NULL_ARG;
   }
 
+  RW_READ_LOCK(&tree->lock);
+
   // Check if tree is properly constructed
   if (!tree->root || tree->leaf_count == 0) {
+    RW_READ_UNLOCK(&tree->lock);
     return MERKLE_BAD_ARG;
   }
 
   // Copy the root hash to the output buffer
   memcpy(copy_into, tree->root->hash, HASH_SIZE);
+  RW_READ_UNLOCK(&tree->lock);
   return MERKLE_SUCCESS;
 }
 
-merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder finder, size_t *path_length, merkle_proof_t** proof){
+merkle_error_t generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t** proof){
   
   // Validate input parameters
   if(!tree || !finder || !proof){
@@ -580,18 +593,31 @@ merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder 
   }
 
   merkle_error_t result = MERKLE_SUCCESS;
+  RW_READ_LOCK(&tree->lock);
 
   for(size_t i = 0; i < tree->leaf_count && result == MERKLE_SUCCESS; ++i){
     if(finder(tree->leaves[i]->data)){
-      result = generate_proof_from_index(tree,i,proof);
+      result = generate_proof(tree,i,proof);
       break;
     }
   }
 
+  RW_READ_UNLOCK(&tree->lock);
   return result;
 }
 
-merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_index, merkle_proof_t **proof){
+merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof){
+  if(!tree || !proof){
+    return MERKLE_BAD_ARG;
+  }
+  
+  RW_READ_LOCK(&tree->lock);
+  merkle_error_t result = generate_proof(tree,leaf_index,proof);
+  RW_READ_UNLOCK(&tree->lock);
+  return result;
+}
+
+static merkle_error_t generate_proof(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof){
   
   // Validate input parameters
   if(!tree || tree->leaf_count <= leaf_index || !proof){

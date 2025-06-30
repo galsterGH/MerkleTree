@@ -93,7 +93,9 @@
     "complex": "c",
     "__node_handle": "c",
     "typeinfo": "c",
-    "stdbool.h": "c"
+    "stdbool.h": "c",
+    "merkle_utils.h": "c",
+    "mutex": "c"
   },
   "[c]": {
     "editor.defaultFormatter": "xaver.clang-format",

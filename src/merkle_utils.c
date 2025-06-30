@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <setjmp.h>
-#include "Utils.h"
+#include "merkle_utils.h"
 
 // Thread-local storage for signal handling
 __thread jmp_buf merkle_segv_buf;

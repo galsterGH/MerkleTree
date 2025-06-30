@@ -84,7 +84,7 @@ help:
 .PHONY: all test test-memory test-debug clean rebuild help
 
 # Dependencies (manual for now, could use gcc -MM to generate)
-$(SRC_DIR)/merkle_tree.o: $(SRC_DIR)/merkle_tree.c ../include/Merkle.h ../include/MerkleQueue.h ../include/Utils.h
-$(SRC_DIR)/merkle_queue.o: $(SRC_DIR)/merkle_queue.c ../include/MerkleQueue.h ../include/Utils.h
-$(SRC_DIR)/merkle_utils.o: $(SRC_DIR)/merkle_utils.c ../include/Utils.h
-test_merkle_tree.o: test_merkle_tree.c ../include/Merkle.h ../include/Utils.h
+$(SRC_DIR)/merkle_tree.o: $(SRC_DIR)/merkle_tree.c ../include/Merkle.h ../include/MerkleQueue.h ../include/merkle_utils.h
+$(SRC_DIR)/merkle_queue.o: $(SRC_DIR)/merkle_queue.c ../include/MerkleQueue.h ../include/merkle_utils.h
+$(SRC_DIR)/merkle_utils.o: $(SRC_DIR)/merkle_utils.c ../include/merkle_utils.h
+test_merkle_tree.o: test_merkle_tree.c ../include/Merkle.h ../include/merkle_utils.h

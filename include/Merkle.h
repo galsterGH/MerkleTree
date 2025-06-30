@@ -100,7 +100,7 @@ void dealloc_merkle_tree(merkle_tree_t *tree);
  * @param copy_into Buffer to copy the hash into (must be HASH_SIZE bytes).
  * @return MERKLE_SUCCESS on success, MERKLE_NULL_ARG if either parameter is NULL.
  */
-merkle_error_t get_tree_hash(const merkle_tree_t *tree, unsigned char copy_into[HASH_SIZE]);
+merkle_error_t get_tree_hash(merkle_tree_t * const tree, unsigned char copy_into[HASH_SIZE]);
 
 
 /**
@@ -116,7 +116,7 @@ merkle_error_t get_tree_hash(const merkle_tree_t *tree, unsigned char copy_into[
  * @param path_length Pointer to store the length of the proof path (must not be NULL).
  * @return MERKLE_SUCCESS on success, error code on failure.
  */
-merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_index, merkle_proof_t **proof);
+merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof);
 
 /**
  * @brief Generates a Merkle proof for a leaf found using a custom finder function.
@@ -131,7 +131,7 @@ merkle_error_t generate_proof_from_index(const merkle_tree_t *tree, size_t leaf_
  * @return Pointer to the generated proof on success, NULL on failure (null arguments,
  *         no matching leaf found, or memory allocation failure).
  */
-merkle_error_t generate_proof_by_finder(const merkle_tree_t *tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
+merkle_error_t generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
 
 
 #endif // MERKLE_H
