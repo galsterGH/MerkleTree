@@ -113,7 +113,6 @@ merkle_error_t get_tree_hash(merkle_tree_t * const tree, unsigned char copy_into
  * @param tree Pointer to the Merkle tree (must not be NULL).
  * @param leaf_index Index of the leaf to generate proof for (must be < leaf count).
  * @param proof Pointer to store the generated proof (must not be NULL).
- * @param path_length Pointer to store the length of the proof path (must not be NULL).
  * @return MERKLE_SUCCESS on success, error code on failure.
  */
 merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof);
@@ -128,8 +127,8 @@ merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_
  * @param tree Pointer to the Merkle tree (must not be NULL).
  * @param finder Function pointer to locate the target leaf value (must not be NULL).
  * @param path_length Pointer to store the length of the proof path (must not be NULL).
- * @return Pointer to the generated proof on success, NULL on failure (null arguments,
- *         no matching leaf found, or memory allocation failure).
+ * @param proof Pointer to store the generated proof (must not be NULL).
+ * @return MERKLE_SUCCESS on success, error code on failure.
  */
 merkle_error_t generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t** proof);
 

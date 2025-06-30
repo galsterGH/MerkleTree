@@ -9,6 +9,8 @@ A robust, n-ary Merkle Tree implementation in C with comprehensive testing and d
 - **Queue-based Construction**: Efficient bottom-up tree building algorithm
 - **Memory Safe**: Comprehensive error handling and memory management
 - **Opaque API**: Clean public interface with implementation details hidden
+- **Merkle Proofs**: Generate and verify proofs for individual leaves
+- **Thread-Safe API**: Read/write locking for concurrent access
 - **Comprehensive Tests**: Full unit test suite with memory leak detection
 - **Documentation**: Complete Doxygen-generated API documentation
 
@@ -182,8 +184,11 @@ Complete API documentation is generated with Doxygen:
 
 | Function                | Description                            |
 | ----------------------- | -------------------------------------- |
-| `merkle_tree_create()`  | Create a Merkle tree from data blocks  |
-| `merkle_tree_destroy()` | Free all memory associated with a tree |
+| `merkle_tree_create()`      | Create a Merkle tree from data blocks       |
+| `merkle_tree_destroy()`     | Free all memory associated with a tree      |
+| `get_tree_hash()`           | Retrieve the root hash of a tree            |
+| `generate_proof_from_index()` | Create a proof for a leaf by index          |
+| `generate_proof_by_finder()`  | Create a proof using a custom finder        |
 
 ### Error Codes
 
