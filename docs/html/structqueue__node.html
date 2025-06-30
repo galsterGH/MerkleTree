@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: queue_node Struct Reference</title>
+<title>Merkle Tree Library: queue_node Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -62,7 +63,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('structqueue__node.html','','structqueue__node-members'); });
+$(function(){initNavTree('structqueue__node.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -91,13 +92,22 @@ $(function(){initNavTree('structqueue__node.html','','structqueue__node-members'
   <div class="headertitle"><div class="title">queue_node Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Internal structure representing a node in the queue.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
+Data Fields</h2></td></tr>
 <tr class="memitem:a80962fbbabb256723314bae59b92a38e" id="r_a80962fbbabb256723314bae59b92a38e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80962fbbabb256723314bae59b92a38e">value</a></td></tr>
+<tr class="memdesc:a80962fbbabb256723314bae59b92a38e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the stored data.  <br /></td></tr>
 <tr class="memitem:a565df498beea7adf6a5ff3a64ada8f78" id="r_a565df498beea7adf6a5ff3a64ada8f78"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structqueue__node.html">queue_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a565df498beea7adf6a5ff3a64ada8f78">next</a></td></tr>
+<tr class="memdesc:a565df498beea7adf6a5ff3a64ada8f78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the next node in the queue.  <br /></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Internal structure representing a node in the queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00031">31</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a565df498beea7adf6a5ff3a64ada8f78" name="a565df498beea7adf6a5ff3a64ada8f78"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a565df498beea7adf6a5ff3a64ada8f78">&#9670;&#160;</a></span>next</h2>
 
@@ -109,6 +119,10 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pointer to the next node in the queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00033">33</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -124,10 +138,14 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pointer to the stored data. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00032">32</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/<a class="el" href="merkle__queue_8c.html">merkle_queue.c</a></li>
+<li>src/<a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

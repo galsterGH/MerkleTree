@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: merkle_tree Struct Reference</title>
+<title>Merkle Tree Library: merkle_tree Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -62,7 +63,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('structmerkle__tree.html','','structmerkle__tree-members'); });
+$(function(){initNavTree('structmerkle__tree.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -95,18 +96,44 @@ $(function(){initNavTree('structmerkle__tree.html','','structmerkle__tree-member
 <p>Represents a Merkle tree.  
  <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_merkle_8h_source.html">Merkle.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="test__merkle__internal_8h_source.html">test_merkle_internal.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a7f45bc2b349f3880c0342e0c8193b715" id="r_a7f45bc2b349f3880c0342e0c8193b715"><td class="memItemLeft" align="right" valign="top"><a class="el" href="merkle__tree_8c.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f45bc2b349f3880c0342e0c8193b715">root</a></td></tr>
-<tr class="memitem:a341b32c3e1963321dd2a93cc8aab71cc" id="r_a341b32c3e1963321dd2a93cc8aab71cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="merkle__tree_8c.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a341b32c3e1963321dd2a93cc8aab71cc">leaves</a></td></tr>
+Data Fields</h2></td></tr>
+<tr class="memitem:ab020b91e7bbbbdf1cd5548b8caca7213" id="r_ab020b91e7bbbbdf1cd5548b8caca7213"><td class="memItemLeft" align="right" valign="top"><a class="el" href="locking_8h.html#adb15f470162b1ca7344862fce5302c0b">rw_lock_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab020b91e7bbbbdf1cd5548b8caca7213">lock</a></td></tr>
+<tr class="memitem:af4255e179d11c00dd1b5f8ca97a66548" id="r_af4255e179d11c00dd1b5f8ca97a66548"><td class="memItemLeft" align="right" valign="top"><a class="el" href="test__merkle__internal_8h.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4255e179d11c00dd1b5f8ca97a66548">root</a></td></tr>
+<tr class="memdesc:af4255e179d11c00dd1b5f8ca97a66548"><td class="mdescLeft">&#160;</td><td class="mdescRight">Root node of the tree.  <br /></td></tr>
+<tr class="memitem:a816a730aaf87bd65d17b9c9fcc670dc0" id="r_a816a730aaf87bd65d17b9c9fcc670dc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="test__merkle__internal_8h.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a816a730aaf87bd65d17b9c9fcc670dc0">leaves</a></td></tr>
+<tr class="memdesc:a816a730aaf87bd65d17b9c9fcc670dc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of leaf nodes.  <br /></td></tr>
 <tr class="memitem:a56d95562c83d3968fc9fe5eba5b0cdd8" id="r_a56d95562c83d3968fc9fe5eba5b0cdd8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56d95562c83d3968fc9fe5eba5b0cdd8">leaf_count</a></td></tr>
+<tr class="memdesc:a56d95562c83d3968fc9fe5eba5b0cdd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of leaves.  <br /></td></tr>
+<tr class="memitem:a94666bf19b51b87b3344cda1f3488ccb" id="r_a94666bf19b51b87b3344cda1f3488ccb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94666bf19b51b87b3344cda1f3488ccb">levels</a></td></tr>
+<tr class="memdesc:a94666bf19b51b87b3344cda1f3488ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of levels in the tree.  <br /></td></tr>
+<tr class="memitem:adf383cb90de232fca44241b0db917581" id="r_adf383cb90de232fca44241b0db917581"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf383cb90de232fca44241b0db917581">branching_factor</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a Merkle tree. </p>
-<p>Opaque structure representing a Merkle tree. </p>
-</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<p>Opaque structure representing a Merkle tree.</p>
+<p>Internal structure of a Merkle tree (for testing). </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00049">49</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a id="adf383cb90de232fca44241b0db917581" name="adf383cb90de232fca44241b0db917581"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf383cb90de232fca44241b0db917581">&#9670;&#160;</a></span>branching_factor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t merkle_tree::branching_factor</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00055">55</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
+</div>
+</div>
 <a id="a56d95562c83d3968fc9fe5eba5b0cdd8" name="a56d95562c83d3968fc9fe5eba5b0cdd8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a56d95562c83d3968fc9fe5eba5b0cdd8">&#9670;&#160;</a></span>leaf_count</h2>
 
@@ -118,42 +145,86 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>Number of leaves. </p>
 
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00053">53</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
 </div>
 </div>
-<a id="a341b32c3e1963321dd2a93cc8aab71cc" name="a341b32c3e1963321dd2a93cc8aab71cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a341b32c3e1963321dd2a93cc8aab71cc">&#9670;&#160;</a></span>leaves</h2>
+<a id="a816a730aaf87bd65d17b9c9fcc670dc0" name="a816a730aaf87bd65d17b9c9fcc670dc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a816a730aaf87bd65d17b9c9fcc670dc0">&#9670;&#160;</a></span>leaves</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="merkle__tree_8c.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a>** merkle_tree::leaves</td>
+          <td class="memname"><a class="el" href="test__merkle__internal_8h.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> ** merkle_tree::leaves</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>Array of leaf nodes. </p>
 
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00052">52</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
 </div>
 </div>
-<a id="a7f45bc2b349f3880c0342e0c8193b715" name="a7f45bc2b349f3880c0342e0c8193b715"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f45bc2b349f3880c0342e0c8193b715">&#9670;&#160;</a></span>root</h2>
+<a id="a94666bf19b51b87b3344cda1f3488ccb" name="a94666bf19b51b87b3344cda1f3488ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94666bf19b51b87b3344cda1f3488ccb">&#9670;&#160;</a></span>levels</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="merkle__tree_8c.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a>* merkle_tree::root</td>
+          <td class="memname">size_t merkle_tree::levels</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Root node of the tree. </p>
+
+<p>Number of levels in the tree. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00054">54</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/<a class="el" href="merkle__tree_8c.html">merkle_tree.c</a></li>
+<a id="ab020b91e7bbbbdf1cd5548b8caca7213" name="ab020b91e7bbbbdf1cd5548b8caca7213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab020b91e7bbbbdf1cd5548b8caca7213">&#9670;&#160;</a></span>lock</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="locking_8h.html#adb15f470162b1ca7344862fce5302c0b">rw_lock_t</a> merkle_tree::lock</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00050">50</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
+</div>
+</div>
+<a id="af4255e179d11c00dd1b5f8ca97a66548" name="af4255e179d11c00dd1b5f8ca97a66548"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4255e179d11c00dd1b5f8ca97a66548">&#9670;&#160;</a></span>root</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="test__merkle__internal_8h.html#a4ef105bf8edc56b3a40dd8497d195648">merkle_node_t</a> * merkle_tree::root</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Root node of the tree. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00051">51</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following files:<ul>
+<li>src/<a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a></li>
+<li>tests/<a class="el" href="test__merkle__internal_8h_source.html">test_merkle_internal.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

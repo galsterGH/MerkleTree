@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: File Members</title>
+<title>Merkle Tree Library: Globals</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -89,17 +90,31 @@ $(function(){initNavTree('globals_defs.html','',''); });
 
 <div class="contents">
 <div class="textblock">Here is a list of all macros with links to the files they belong to:</div><ul>
-<li>DATA_TYPE&#160;:&#160;<a class="el" href="merkle__tree_8c.html#afb8c72ce35c4a1f4a2588d6573e54aa1">merkle_tree.c</a></li>
-<li>DEALLOC_QUEUE_ELEMENTS&#160;:&#160;<a class="el" href="merkle__tree_8c.html#a0130f567a12919d8d09d649d4e92a025">merkle_tree.c</a></li>
-<li>FREE_ALL&#160;:&#160;<a class="el" href="merkle__tree_8c.html#aaec5e7a82cc2900dca5c861addf57316">merkle_tree.c</a></li>
-<li>HASH_SIZE&#160;:&#160;<a class="el" href="merkle__tree_8c.html#ad6074dd11ab3c97c8135c43aab03ae95">merkle_tree.c</a></li>
-<li>HASH_TWO_NODES_SHA256&#160;:&#160;<a class="el" href="merkle__tree_8c.html#aa6e36d945ecbaed4e1113607c2f50747">merkle_tree.c</a></li>
-<li>HASH_TYPE&#160;:&#160;<a class="el" href="merkle__tree_8c.html#abc31d73e62d5a07ddad2608f759c288c">merkle_tree.c</a></li>
-<li>likely&#160;:&#160;<a class="el" href="_utils_8h.html#a217a0bd562b98ae8c2ffce44935351e1">Utils.h</a></li>
-<li>MFree&#160;:&#160;<a class="el" href="_utils_8h.html#a0961aac681e9b27ab549eaeb83b1a8a4">Utils.h</a></li>
+<li>ALLOC_AND_INIT&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a26ac4e27268f63dab4b38f7d58761597">merkle_utils.h</a></li>
+<li>ALLOC_AND_INIT_SIMPLE&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a24a0f128741fb7ced0db198938ded3a0">merkle_utils.h</a></li>
+<li>CATCH&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a7b230a6f3c9c3e809c2c1af2d27223ec">merkle_utils.h</a></li>
+<li>HASH_SIZE&#160;:&#160;<a class="el" href="Merkle_8h.html#ad6074dd11ab3c97c8135c43aab03ae95">Merkle.h</a>, <a class="el" href="test__merkle__internal_8h.html#ad6074dd11ab3c97c8135c43aab03ae95">test_merkle_internal.h</a></li>
+<li>IS_LAST_ELEMENT&#160;:&#160;<a class="el" href="merkle__tree_8c.html#a1273d1c161fa555af9257f6bb5b47828">merkle_tree.c</a></li>
+<li>IS_LEAF_NODES_LEVEL&#160;:&#160;<a class="el" href="merkle__tree_8c.html#a9881097b613ed13a106ec21eb54db5fd">merkle_tree.c</a></li>
+<li>likely&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a217a0bd562b98ae8c2ffce44935351e1">merkle_utils.h</a></li>
+<li>MFree&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a0961aac681e9b27ab549eaeb83b1a8a4">merkle_utils.h</a></li>
 <li>min&#160;:&#160;<a class="el" href="merkle__queue_8c.html#ac6afabdc09a49a433ee19d8a9486056d">merkle_queue.c</a></li>
-<li>MMalloc&#160;:&#160;<a class="el" href="_utils_8h.html#a21778930659f797c79be4cba64096e1b">Utils.h</a></li>
-<li>unlikely&#160;:&#160;<a class="el" href="_utils_8h.html#ac6c45889010c1bd68631771b64f18101">Utils.h</a></li>
+<li>MMalloc&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a21778930659f797c79be4cba64096e1b">merkle_utils.h</a></li>
+<li>RUN_TEST&#160;:&#160;<a class="el" href="test__merkle__tree_8c.html#a36936b10eceab520bb9d3d95534a00db">test_merkle_tree.c</a></li>
+<li>RW_DESTROY_LOCK&#160;:&#160;<a class="el" href="locking_8h.html#a516dcb827ea82b9d3d0ec4e9fc37504f">locking.h</a></li>
+<li>RW_LOCK_INIT&#160;:&#160;<a class="el" href="locking_8h.html#a841c2e3a90dc607c2608f5a65f2e2a1c">locking.h</a></li>
+<li>RW_READ_LOCK&#160;:&#160;<a class="el" href="locking_8h.html#a33cf8c93fc43ac69f009a338a7734ad1">locking.h</a></li>
+<li>RW_READ_UNLOCK&#160;:&#160;<a class="el" href="locking_8h.html#a383d507fd5af26a880d4497653a02416">locking.h</a></li>
+<li>RW_WRITE_LOCK&#160;:&#160;<a class="el" href="locking_8h.html#a0d7d3be98c90724140045ca418027d17">locking.h</a></li>
+<li>RW_WRITE_UNLOCK&#160;:&#160;<a class="el" href="locking_8h.html#a9627e2f9617d4ee359ebeb387fe35a46">locking.h</a></li>
+<li>SAFE_ACCESS_CATCH&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a3ae09f42f4204062a3fd5b84c985e8f0">merkle_utils.h</a></li>
+<li>SAFE_ACCESS_END&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a0cd23490e239eb606cf11551dc70c927">merkle_utils.h</a></li>
+<li>SAFE_ACCESS_TRY&#160;:&#160;<a class="el" href="merkle__utils_8h.html#a1735b9dbf8572ec442b9e0255687502e">merkle_utils.h</a></li>
+<li>TEST_ASSERT&#160;:&#160;<a class="el" href="test__merkle__tree_8c.html#a9b70fcec3db30bae41b4b63bf51ac4c0">test_merkle_tree.c</a></li>
+<li>TEST_PASS&#160;:&#160;<a class="el" href="test__merkle__tree_8c.html#a5aa825b3ae9d49df46cd6e452cff7a1b">test_merkle_tree.c</a></li>
+<li>THROW&#160;:&#160;<a class="el" href="merkle__utils_8h.html#ac900f7f4cbb8ade051915b56180eb89d">merkle_utils.h</a></li>
+<li>TRY&#160;:&#160;<a class="el" href="merkle__utils_8h.html#ad2746371528bdf15c3910b7bf217dac0">merkle_utils.h</a></li>
+<li>unlikely&#160;:&#160;<a class="el" href="merkle__utils_8h.html#ac6c45889010c1bd68631771b64f18101">merkle_utils.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['data_5ftype_0',['DATA_TYPE',['../merkle__tree_8c.html#afb8c72ce35c4a1f4a2588d6573e54aa1',1,'merkle_tree.c']]],
-  ['dealloc_5fqueue_5felements_1',['DEALLOC_QUEUE_ELEMENTS',['../merkle__tree_8c.html#a0130f567a12919d8d09d649d4e92a025',1,'merkle_tree.c']]]
+  ['alloc_5fand_5finit_0',['ALLOC_AND_INIT',['../merkle__utils_8h.html#a26ac4e27268f63dab4b38f7d58761597',1,'merkle_utils.h']]],
+  ['alloc_5fand_5finit_5fsimple_1',['ALLOC_AND_INIT_SIMPLE',['../merkle__utils_8h.html#a24a0f128741fb7ced0db198938ded3a0',1,'merkle_utils.h']]]
 ];

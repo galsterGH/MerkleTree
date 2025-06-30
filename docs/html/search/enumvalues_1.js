@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['merkle_5fbad_5flen_0',['MERKLE_BAD_LEN',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3a182d3fbbdf9144d4943486e4aba0661e',1,'Merkle.h']]],
-  ['merkle_5ffailed_5fmem_5falloc_1',['MERKLE_FAILED_MEM_ALLOC',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3a34958b691bb636e1a86778123d7c0b9e',1,'Merkle.h']]],
-  ['merkle_5ffailed_5ftree_5fbuild_2',['MERKLE_FAILED_TREE_BUILD',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3a577f14a899ad2b06160d8e1bcb588255',1,'Merkle.h']]],
-  ['merkle_5fnull_5farg_3',['MERKLE_NULL_ARG',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3a70e262a1877300b7375d6f1adccb9337',1,'Merkle.h']]],
-  ['merkle_5fsuccess_4',['MERKLE_SUCCESS',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3a3c39692d1801b103da5138c98cddb76e',1,'Merkle.h']]]
+  ['queue_5fbad_5fargument_0',['QUEUE_BAD_ARGUMENT',['../MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483daaa4349ee2ee5ee91c0d03de569c20f6a1',1,'MerkleQueue.h']]],
+  ['queue_5fnull_5fptr_1',['QUEUE_NULL_PTR',['../MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483daac4638c9d8189f5fb3cdbe6effa9b6e88',1,'MerkleQueue.h']]],
+  ['queue_5fok_2',['QUEUE_OK',['../MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483daaeb56fd67077ab485e48d35928772d5fb',1,'MerkleQueue.h']]],
+  ['queue_5fout_5fof_5fmemory_3',['QUEUE_OUT_OF_MEMORY',['../MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483daadb87c25caa704780329eaa109fb49778',1,'MerkleQueue.h']]]
 ];

@@ -9,7 +9,7 @@ var merkle__queue_8c =
     [ "free_queue", "merkle__queue_8c.html#a5c390dc131889888173c2af1118d7208", null ],
     [ "front_queue", "merkle__queue_8c.html#a9ef28d8c22291bc7a303af6e5771daff", null ],
     [ "get_queue_size", "merkle__queue_8c.html#a4712ba746c18f9322b3357400f4d7bfe", null ],
-    [ "init_queue", "merkle__queue_8c.html#ace4b8430689820f99d62da563e2a01d3", null ],
+    [ "init_queue", "merkle__queue_8c.html#ab08245596422fb06902adda1842e5057", null ],
     [ "pop_queue", "merkle__queue_8c.html#a471019fab3ad24105b1954e36e4ec860", null ],
     [ "push_queue", "merkle__queue_8c.html#ae22dcc6c351842fb7a083a6a8921fc7c", null ]
 ];

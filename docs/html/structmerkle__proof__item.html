@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: merkle_proof_item Struct Reference</title>
+<title>Merkle Tree Library: merkle_proof_item Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -62,7 +63,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('structmerkle__proof__item.html','','structmerkle__proof__item-members'); });
+$(function(){initNavTree('structmerkle__proof__item.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -92,49 +93,83 @@ $(function(){initNavTree('structmerkle__proof__item.html','','structmerkle__proo
 </div><!--header-->
 <div class="contents">
 
-<p>Represents an item in a Merkle proof.  
+<p>Represents a single item in a Merkle proof path.  
  <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="test__merkle__internal_8h_source.html">test_merkle_internal.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a3fbb22bfaa8c2aa943316f4b9fda94dd" id="r_a3fbb22bfaa8c2aa943316f4b9fda94dd"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fbb22bfaa8c2aa943316f4b9fda94dd">hash</a> [<a class="el" href="merkle__tree_8c.html#ad6074dd11ab3c97c8135c43aab03ae95">HASH_SIZE</a>]</td></tr>
-<tr class="memitem:ab17faf51382da67c116e9c729efa0e93" id="r_ab17faf51382da67c116e9c729efa0e93"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab17faf51382da67c116e9c729efa0e93">is_left</a></td></tr>
+Data Fields</h2></td></tr>
+<tr class="memitem:a068bb27bb1887d525b4c4a27ebbf7968" id="r_a068bb27bb1887d525b4c4a27ebbf7968"><td class="memItemLeft" align="right" valign="top">unsigned char(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a068bb27bb1887d525b4c4a27ebbf7968">sibling_hashes</a> )[<a class="el" href="test__merkle__internal_8h.html#ad6074dd11ab3c97c8135c43aab03ae95">HASH_SIZE</a>]</td></tr>
+<tr class="memdesc:a068bb27bb1887d525b4c4a27ebbf7968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arrays of sibling hashes at this level.  <br /></td></tr>
+<tr class="memitem:ad22fe9367e8d28f7a081524952054263" id="r_ad22fe9367e8d28f7a081524952054263"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad22fe9367e8d28f7a081524952054263">sibling_count</a></td></tr>
+<tr class="memdesc:ad22fe9367e8d28f7a081524952054263"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of siblings at this level.  <br /></td></tr>
+<tr class="memitem:a4a4088d0e3deb13fbc2049321bd84a4b" id="r_a4a4088d0e3deb13fbc2049321bd84a4b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a4088d0e3deb13fbc2049321bd84a4b">node_position</a></td></tr>
+<tr class="memdesc:a4a4088d0e3deb13fbc2049321bd84a4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Position of our node among siblings.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Represents an item in a Merkle proof. </p>
-</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
-<a id="a3fbb22bfaa8c2aa943316f4b9fda94dd" name="a3fbb22bfaa8c2aa943316f4b9fda94dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fbb22bfaa8c2aa943316f4b9fda94dd">&#9670;&#160;</a></span>hash</h2>
+<div class="textblock"><p>Represents a single item in a Merkle proof path. </p>
+<p>Internal structure of a Merkle proof item (for testing). </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00061">61</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
+<a id="a4a4088d0e3deb13fbc2049321bd84a4b" name="a4a4088d0e3deb13fbc2049321bd84a4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a4088d0e3deb13fbc2049321bd84a4b">&#9670;&#160;</a></span>node_position</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char merkle_proof_item::hash[<a class="el" href="merkle__tree_8c.html#ad6074dd11ab3c97c8135c43aab03ae95">HASH_SIZE</a>]</td>
+          <td class="memname">size_t merkle_proof_item::node_position</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sibling hash. </p>
+
+<p>Position of our node among siblings. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00064">64</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
 
 </div>
 </div>
-<a id="ab17faf51382da67c116e9c729efa0e93" name="ab17faf51382da67c116e9c729efa0e93"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab17faf51382da67c116e9c729efa0e93">&#9670;&#160;</a></span>is_left</h2>
+<a id="ad22fe9367e8d28f7a081524952054263" name="ad22fe9367e8d28f7a081524952054263"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad22fe9367e8d28f7a081524952054263">&#9670;&#160;</a></span>sibling_count</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char merkle_proof_item::is_left</td>
+          <td class="memname">size_t merkle_proof_item::sibling_count</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>1 if sibling is on the left, 0 if on the right. </p>
+
+<p>Number of siblings at this level. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00063">63</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/<a class="el" href="merkle__tree_8c.html">merkle_tree.c</a></li>
+<a id="a068bb27bb1887d525b4c4a27ebbf7968" name="a068bb27bb1887d525b4c4a27ebbf7968"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a068bb27bb1887d525b4c4a27ebbf7968">&#9670;&#160;</a></span>sibling_hashes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned char(* merkle_proof_item::sibling_hashes</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Arrays of sibling hashes at this level. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__tree_8c_source.html#l00062">62</a> of file <a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following files:<ul>
+<li>src/<a class="el" href="merkle__tree_8c_source.html">merkle_tree.c</a></li>
+<li>tests/<a class="el" href="test__merkle__internal_8h_source.html">test_merkle_internal.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

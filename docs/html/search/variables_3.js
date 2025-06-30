@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['is_5fleft_0',['is_left',['../structmerkle__proof__item.html#ab17faf51382da67c116e9c729efa0e93',1,'merkle_proof_item']]]
+  ['data_0',['data',['../structmerkle__node.html#a287a9c3eeb671ae1b5d67f1fb9c2d24d',1,'merkle_node']]]
 ];

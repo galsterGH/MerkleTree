@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: src/merkle_utils.c File Reference</title>
+<title>Merkle Tree Library: src/merkle_utils.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -91,17 +92,67 @@ $(function(){initNavTree('merkle__utils_8c.html','',''); });
   <div class="headertitle"><div class="title">merkle_utils.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Utility functions for the Merkle tree implementation.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="_utils_8h_source.html">include/Utils.h</a>&quot;</code><br />
-</div><table class="memberdecls">
+<code>#include &lt;signal.h&gt;</code><br />
+<code>#include &lt;setjmp.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="merkle__utils_8h_source.html">merkle_utils.h</a>&quot;</code><br />
+</div>
+<p><a href="merkle__utils_8c_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aae30629d7e7683141f4f5292e31d9977" id="r_aae30629d7e7683141f4f5292e31d9977"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae30629d7e7683141f4f5292e31d9977">merkle_signal_handler</a> (int sig)</td></tr>
+<tr class="memdesc:aae30629d7e7683141f4f5292e31d9977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signal handler for memory access violations.  <br /></td></tr>
+<tr class="memitem:a4d6441ee9abc9ad3b84f579e80285f4c" id="r_a4d6441ee9abc9ad3b84f579e80285f4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d6441ee9abc9ad3b84f579e80285f4c">merkle_init_signal_protection</a> (void)</td></tr>
+<tr class="memdesc:a4d6441ee9abc9ad3b84f579e80285f4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize signal protection for current thread.  <br /></td></tr>
+<tr class="memitem:a98046105071078de5509610fccdeb201" id="r_a98046105071078de5509610fccdeb201"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98046105071078de5509610fccdeb201">merkle_cleanup_signal_protection</a> (void)</td></tr>
+<tr class="memdesc:a98046105071078de5509610fccdeb201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanup signal protection for current thread.  <br /></td></tr>
 <tr class="memitem:a15a7b26b48e59c2f6fbe11271c608c4f" id="r_a15a7b26b48e59c2f6fbe11271c608c4f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15a7b26b48e59c2f6fbe11271c608c4f">Merkle_Malloc</a> (size_t size, const char *file, int line)</td></tr>
 <tr class="memdesc:a15a7b26b48e59c2f6fbe11271c608c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates zero-initialized memory with optional debug information.  <br /></td></tr>
 <tr class="memitem:a7ebccc0def0676d6465f3733ddaad2d4" id="r_a7ebccc0def0676d6465f3733ddaad2d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ebccc0def0676d6465f3733ddaad2d4">Merkle_Free</a> (void *d, const char *file, int line)</td></tr>
 <tr class="memdesc:a7ebccc0def0676d6465f3733ddaad2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory previously allocated by Merkle_Malloc, with optional debug information.  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:abb5094c52ae036e0899eacea40fbf493" id="r_abb5094c52ae036e0899eacea40fbf493"><td class="memItemLeft" align="right" valign="top">__thread jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abb5094c52ae036e0899eacea40fbf493">merkle_segv_buf</a></td></tr>
+<tr class="memdesc:abb5094c52ae036e0899eacea40fbf493"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-local storage for signal handling.  <br /></td></tr>
+<tr class="memitem:a913c14015f996613e773ae19267718ff" id="r_a913c14015f996613e773ae19267718ff"><td class="memItemLeft" align="right" valign="top">__thread volatile int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a913c14015f996613e773ae19267718ff">merkle_segv_occurred</a> = 0</td></tr>
+<tr class="memitem:a9b8a1196570339ffd2ee5722f5a8d55e" id="r_a9b8a1196570339ffd2ee5722f5a8d55e"><td class="memItemLeft" align="right" valign="top">static __thread void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b8a1196570339ffd2ee5722f5a8d55e">original_segv_handler</a> )(int) = NULL</td></tr>
+<tr class="memitem:aaee5daeb1e5a0f60dcf1dd129de48f1f" id="r_aaee5daeb1e5a0f60dcf1dd129de48f1f"><td class="memItemLeft" align="right" valign="top">static __thread void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaee5daeb1e5a0f60dcf1dd129de48f1f">original_bus_handler</a> )(int) = NULL</td></tr>
+<tr class="memitem:aeab80e03d9228d14334efe088e009f83" id="r_aeab80e03d9228d14334efe088e009f83"><td class="memItemLeft" align="right" valign="top">static __thread void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeab80e03d9228d14334efe088e009f83">original_abrt_handler</a> )(int) = NULL</td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Utility functions for the Merkle tree implementation. </p>
+<p>This file contains utility functions and definitions for the Merkle tree implementation, including memory management functions with debugging support.</p>
+<dl class="section author"><dt>Author</dt><dd>Guy Alster </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>May 24, 2025 </dd></dl>
+
+<p class="definition">Definition in file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="a98046105071078de5509610fccdeb201" name="a98046105071078de5509610fccdeb201"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98046105071078de5509610fccdeb201">&#9670;&#160;</a></span>merkle_cleanup_signal_protection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void merkle_cleanup_signal_protection </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cleanup signal protection for current thread. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00055">55</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
 <a id="a7ebccc0def0676d6465f3733ddaad2d4" name="a7ebccc0def0676d6465f3733ddaad2d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ebccc0def0676d6465f3733ddaad2d4">&#9670;&#160;</a></span>Merkle_Free()</h2>
 
@@ -127,6 +178,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Frees memory previously allocated by Merkle_Malloc, with optional debug information. </p>
+<p>Free memory allocated by <a class="el" href="merkle__utils_8h.html#a15a7b26b48e59c2f6fbe11271c608c4f" title="Allocate zero-initialized memory with debug location information.">Merkle_Malloc()</a>.</p>
 <p>This function frees the memory pointed to by <code class="param">d</code>. If MERKLE_DEBUG is defined, it prints debug information about the deallocation.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -136,6 +188,29 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00121">121</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="a4d6441ee9abc9ad3b84f579e80285f4c" name="a4d6441ee9abc9ad3b84f579e80285f4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d6441ee9abc9ad3b84f579e80285f4c">&#9670;&#160;</a></span>merkle_init_signal_protection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void merkle_init_signal_protection </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize signal protection for current thread. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00037">37</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
 
 </div>
 </div>
@@ -164,6 +239,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Allocates zero-initialized memory with optional debug information. </p>
+<p>Allocate zero-initialized memory with debug location information.</p>
 <p>This function allocates a memory block of the given size, zero-initializes it, and, if MERKLE_DEBUG is defined, prints debug information about the allocation.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -174,6 +250,153 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the allocated memory, or NULL if allocation fails. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00092">92</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="aae30629d7e7683141f4f5292e31d9977" name="aae30629d7e7683141f4f5292e31d9977"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae30629d7e7683141f4f5292e31d9977">&#9670;&#160;</a></span>merkle_signal_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void merkle_signal_handler </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>sig</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Signal handler for memory access violations. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00029">29</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<a id="abb5094c52ae036e0899eacea40fbf493" name="abb5094c52ae036e0899eacea40fbf493"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb5094c52ae036e0899eacea40fbf493">&#9670;&#160;</a></span>merkle_segv_buf</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__thread jmp_buf merkle_segv_buf</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Thread-local storage for signal handling. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00018">18</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="a913c14015f996613e773ae19267718ff" name="a913c14015f996613e773ae19267718ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a913c14015f996613e773ae19267718ff">&#9670;&#160;</a></span>merkle_segv_occurred</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__thread volatile int merkle_segv_occurred = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00019">19</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="aeab80e03d9228d14334efe088e009f83" name="aeab80e03d9228d14334efe088e009f83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeab80e03d9228d14334efe088e009f83">&#9670;&#160;</a></span>original_abrt_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">__thread void(* original_abrt_handler) (int) </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> = NULL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00024">24</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="aaee5daeb1e5a0f60dcf1dd129de48f1f" name="aaee5daeb1e5a0f60dcf1dd129de48f1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaee5daeb1e5a0f60dcf1dd129de48f1f">&#9670;&#160;</a></span>original_bus_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">__thread void(* original_bus_handler) (int) </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> = NULL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00023">23</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
+
+</div>
+</div>
+<a id="a9b8a1196570339ffd2ee5722f5a8d55e" name="a9b8a1196570339ffd2ee5722f5a8d55e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b8a1196570339ffd2ee5722f5a8d55e">&#9670;&#160;</a></span>original_segv_handler</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">__thread void(* original_segv_handler) (int) </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> = NULL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="merkle__utils_8c_source.html#l00022">22</a> of file <a class="el" href="merkle__utils_8c_source.html">merkle_utils.c</a>.</p>
 
 </div>
 </div>

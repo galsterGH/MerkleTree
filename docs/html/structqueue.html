@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: queue Struct Reference</title>
+<title>Merkle Tree Library: queue Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -62,7 +63,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('structqueue.html','','structqueue-members'); });
+$(function(){initNavTree('structqueue.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -91,14 +92,29 @@ $(function(){initNavTree('structqueue.html','','structqueue-members'); });
   <div class="headertitle"><div class="title">queue Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Opaque structure representing a queue.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="MerkleQueue_8h_source.html">MerkleQueue.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
+Data Fields</h2></td></tr>
 <tr class="memitem:a86a7e853839eed2645c977e37a0d97f3" id="r_a86a7e853839eed2645c977e37a0d97f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structqueue__node.html">queue_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a86a7e853839eed2645c977e37a0d97f3">head</a></td></tr>
+<tr class="memdesc:a86a7e853839eed2645c977e37a0d97f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to sentinel node.  <br /></td></tr>
 <tr class="memitem:ac073eaa9fd932bd481fe6a596d0831f6" id="r_ac073eaa9fd932bd481fe6a596d0831f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structqueue__node.html">queue_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac073eaa9fd932bd481fe6a596d0831f6">tail</a></td></tr>
+<tr class="memdesc:ac073eaa9fd932bd481fe6a596d0831f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the last actual node (or sentinel if empty).  <br /></td></tr>
 <tr class="memitem:af552679f638df20e34ce9ad862e9aedb" id="r_af552679f638df20e34ce9ad862e9aedb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af552679f638df20e34ce9ad862e9aedb">queue_size</a></td></tr>
+<tr class="memdesc:af552679f638df20e34ce9ad862e9aedb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current number of elements in the queue.  <br /></td></tr>
 </table>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Opaque structure representing a queue. </p>
+<p>Internal structure representing the queue.</p>
+<p>This structure is forward declared to hide implementation details. Users should only interact with the queue through the provided functions.</p>
+<p>Uses a sentinel node design where head points to a dummy node, and the actual queue elements start from head-&gt;next. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00043">43</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="a86a7e853839eed2645c977e37a0d97f3" name="a86a7e853839eed2645c977e37a0d97f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a86a7e853839eed2645c977e37a0d97f3">&#9670;&#160;</a></span>head</h2>
 
@@ -110,6 +126,10 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pointer to sentinel node. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00044">44</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -125,6 +145,10 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Current number of elements in the queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00046">46</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
 <a id="ac073eaa9fd932bd481fe6a596d0831f6" name="ac073eaa9fd932bd481fe6a596d0831f6"></a>
@@ -139,10 +163,14 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pointer to the last actual node (or sentinel if empty). </p>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00045">45</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/<a class="el" href="merkle__queue_8c.html">merkle_queue.c</a></li>
+<li>src/<a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

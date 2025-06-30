@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['deallocation_5fpolicy_0',['deallocation_policy',['../merkle__tree_8c.html#a4d28716b9d3deec1bab152ecfd649c6b',1,'merkle_tree.c']]]
+  ['merkle_5ferror_5ft_0',['merkle_error_t',['../Merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3',1,'Merkle.h']]]
 ];

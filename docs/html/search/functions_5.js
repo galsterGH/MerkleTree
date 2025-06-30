@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['init_5fqueue_0',['init_queue',['../_merkle_queue_8h.html#ab08245596422fb06902adda1842e5057',1,'init_queue(void):&#160;merkle_queue.c'],['../merkle__queue_8c.html#ace4b8430689820f99d62da563e2a01d3',1,'init_queue():&#160;merkle_queue.c']]]
+  ['generate_5fproof_0',['generate_proof',['../merkle__tree_8c.html#a52bf04ea094e26fc9c6677dc9e4f6167',1,'merkle_tree.c']]],
+  ['generate_5fproof_5fby_5ffinder_1',['generate_proof_by_finder',['../Merkle_8h.html#aa14110838bef0e07d43080456fcdc235',1,'generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t **proof):&#160;merkle_tree.c'],['../merkle__tree_8c.html#aa14110838bef0e07d43080456fcdc235',1,'generate_proof_by_finder(merkle_tree_t *const tree, value_finder finder, size_t *path_length, merkle_proof_t **proof):&#160;merkle_tree.c']]],
+  ['generate_5fproof_5ffrom_5findex_2',['generate_proof_from_index',['../Merkle_8h.html#abb2327ddaea6ba98c20196322df2b43f',1,'generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof):&#160;merkle_tree.c'],['../merkle__tree_8c.html#abb2327ddaea6ba98c20196322df2b43f',1,'generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof):&#160;merkle_tree.c']]],
+  ['get_5fqueue_5fsize_3',['get_queue_size',['../MerkleQueue_8h.html#a4712ba746c18f9322b3357400f4d7bfe',1,'get_queue_size(queue_t *q):&#160;merkle_queue.c'],['../merkle__queue_8c.html#a4712ba746c18f9322b3357400f4d7bfe',1,'get_queue_size(queue_t *q):&#160;merkle_queue.c']]],
+  ['get_5froot_5fhash_4',['get_root_hash',['../namespacepython__ctypes__example.html#a457ac88afb121797edb983da81925c5e',1,'python_ctypes_example']]],
+  ['get_5ftree_5fhash_5',['get_tree_hash',['../Merkle_8h.html#a05f0004d6d9bb58fe719c40d73a0afd2',1,'get_tree_hash(merkle_tree_t *const tree, unsigned char copy_into[HASH_SIZE]):&#160;merkle_tree.c'],['../merkle__tree_8c.html#a05f0004d6d9bb58fe719c40d73a0afd2',1,'get_tree_hash(merkle_tree_t *const tree, unsigned char copy_into[HASH_SIZE]):&#160;merkle_tree.c']]]
 ];

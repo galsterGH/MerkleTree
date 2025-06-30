@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: Main Page</title>
+<title>Merkle Tree Library: Merkle Tree Library Documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -87,10 +88,133 @@ $(function(){initNavTree('index.html','',''); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">Merkle Tree Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">Merkle Tree Library Documentation </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="mainpage"></a></p>
+<p>Welcome to the <b>Merkle Tree Library</b> documentation! This library provides a high-performance, thread-safe C implementation of n-ary Merkle trees with SHA-256 hashing.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
+🌟 Key Features</h1>
+<ul>
+<li><b>High Performance</b>: Optimized C implementation with minimal memory overhead</li>
+<li><b>Thread-Safe</b>: Full read-write locking support for concurrent operations</li>
+<li><b>Flexible</b>: Configurable branching factors (binary, ternary, or any n-ary tree)</li>
+<li><b>Cross-Platform</b>: Works on Windows, macOS, and Linux</li>
+<li><b>Memory Safe</b>: Comprehensive memory management with leak detection</li>
+<li><b>Production Ready</b>: Extensive test suite with 100+ unit tests</li>
+<li><b>Language Bindings</b>: Python ctypes example included</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md71"></a>
+📚 Quick Navigation</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Section  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="getting_started.html">Getting Started</a>  </td><td class="markdownTableBodyNone">Installation and basic usage  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="api_overview.html">API Overview</a>  </td><td class="markdownTableBodyNone">Comprehensive API reference  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="dir_d28a4824dc47e487b107a5db32ef43c4.html">examples</a>  </td><td class="markdownTableBodyNone">Code examples and tutorials  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">threading  </td><td class="markdownTableBodyNone">Thread safety and locking  </td></tr>
+</table>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+🚀 Quick Start</h1>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="Merkle_8h.html">Merkle.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Create sample data</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> *data[] = {<span class="stringliteral">&quot;Hello&quot;</span>, <span class="stringliteral">&quot;World&quot;</span>, <span class="stringliteral">&quot;Merkle&quot;</span>, <span class="stringliteral">&quot;Tree&quot;</span>};</div>
+<div class="line"><span class="keywordtype">size_t</span> sizes[] = {5, 5, 6, 4};</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Build a binary Merkle tree</span></div>
+<div class="line"><a class="code hl_typedef" href="Merkle_8h.html#a764b87014a84f1e0efa1412150f310cf">merkle_tree_t</a> *<a class="code hl_variable" href="namespacepython__ctypes__example.html#a2e0b3c7c30dc87306128d3c0d7e8de1a">tree</a> = <a class="code hl_function" href="Merkle_8h.html#abd24b87b89e48247cf0a5b53e781bdbb">create_merkle_tree</a>(</div>
+<div class="line">    (<span class="keyword">const</span> <span class="keywordtype">void</span>**)data, sizes, 4, 2);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Get the root hash</span></div>
+<div class="line"><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <a class="code hl_variable" href="namespacepython__ctypes__example.html#a45769a5e86a11190c76125fd80114cf3">root_hash</a>[32];</div>
+<div class="line"><a class="code hl_function" href="Merkle_8h.html#a05f0004d6d9bb58fe719c40d73a0afd2">get_tree_hash</a>(tree, root_hash);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Generate a proof for the first element</span></div>
+<div class="line"><a class="code hl_typedef" href="Merkle_8h.html#a7c4d449a6492b356c5ca1b45f3e480a8">merkle_proof_t</a> *proof = NULL;</div>
+<div class="line"><a class="code hl_function" href="Merkle_8h.html#abb2327ddaea6ba98c20196322df2b43f">generate_proof_from_index</a>(tree, 0, &amp;proof);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Clean up</span></div>
+<div class="line"><a class="code hl_function" href="Merkle_8h.html#a67ccd50b81f1b9cc228275b101215739">dealloc_merkle_tree</a>(tree);</div>
+<div class="ttc" id="aMerkle_8h_html"><div class="ttname"><a href="Merkle_8h.html">Merkle.h</a></div><div class="ttdoc">Public API for Merkle tree creation and destruction using SHA-256.</div></div>
+<div class="ttc" id="aMerkle_8h_html_a05f0004d6d9bb58fe719c40d73a0afd2"><div class="ttname"><a href="Merkle_8h.html#a05f0004d6d9bb58fe719c40d73a0afd2">get_tree_hash</a></div><div class="ttdeci">merkle_error_t get_tree_hash(merkle_tree_t *const tree, unsigned char copy_into[HASH_SIZE])</div><div class="ttdoc">Returns the Merkle Tree root&#39;s hash.</div><div class="ttdef"><b>Definition</b> <a href="merkle__tree_8c_source.html#l00568">merkle_tree.c:568</a></div></div>
+<div class="ttc" id="aMerkle_8h_html_a67ccd50b81f1b9cc228275b101215739"><div class="ttname"><a href="Merkle_8h.html#a67ccd50b81f1b9cc228275b101215739">dealloc_merkle_tree</a></div><div class="ttdeci">void dealloc_merkle_tree(merkle_tree_t *tree)</div><div class="ttdoc">Destroys a Merkle tree and frees all associated memory.</div><div class="ttdef"><b>Definition</b> <a href="merkle__tree_8c_source.html#l00436">merkle_tree.c:436</a></div></div>
+<div class="ttc" id="aMerkle_8h_html_a764b87014a84f1e0efa1412150f310cf"><div class="ttname"><a href="Merkle_8h.html#a764b87014a84f1e0efa1412150f310cf">merkle_tree_t</a></div><div class="ttdeci">struct merkle_tree merkle_tree_t</div><div class="ttdoc">Typedef for the opaque Merkle tree structure.</div><div class="ttdef"><b>Definition</b> <a href="Merkle_8h_source.html#l00058">Merkle.h:58</a></div></div>
+<div class="ttc" id="aMerkle_8h_html_a7c4d449a6492b356c5ca1b45f3e480a8"><div class="ttname"><a href="Merkle_8h.html#a7c4d449a6492b356c5ca1b45f3e480a8">merkle_proof_t</a></div><div class="ttdeci">struct merkle_proof merkle_proof_t</div><div class="ttdef"><b>Definition</b> <a href="Merkle_8h_source.html#l00065">Merkle.h:65</a></div></div>
+<div class="ttc" id="aMerkle_8h_html_abb2327ddaea6ba98c20196322df2b43f"><div class="ttname"><a href="Merkle_8h.html#abb2327ddaea6ba98c20196322df2b43f">generate_proof_from_index</a></div><div class="ttdeci">merkle_error_t generate_proof_from_index(merkle_tree_t *const tree, size_t leaf_index, merkle_proof_t **proof)</div><div class="ttdoc">Generates a Merkle proof for a leaf at the specified index.</div><div class="ttdef"><b>Definition</b> <a href="merkle__tree_8c_source.html#l00609">merkle_tree.c:609</a></div></div>
+<div class="ttc" id="aMerkle_8h_html_abd24b87b89e48247cf0a5b53e781bdbb"><div class="ttname"><a href="Merkle_8h.html#abd24b87b89e48247cf0a5b53e781bdbb">create_merkle_tree</a></div><div class="ttdeci">merkle_tree_t * create_merkle_tree(const void **data, const size_t *sizes, size_t count, size_t branching_factor)</div><div class="ttdoc">Creates a Merkle tree from an array of data blocks.</div><div class="ttdef"><b>Definition</b> <a href="merkle__tree_8c_source.html#l00448">merkle_tree.c:448</a></div></div>
+<div class="ttc" id="anamespacepython__ctypes__example_html_a2e0b3c7c30dc87306128d3c0d7e8de1a"><div class="ttname"><a href="namespacepython__ctypes__example.html#a2e0b3c7c30dc87306128d3c0d7e8de1a">python_ctypes_example.tree</a></div><div class="ttdeci">ctypes.c_void_p tree</div><div class="ttdef"><b>Definition</b> <a href="python__ctypes__example_8py_source.html#l00243">python_ctypes_example.py:243</a></div></div>
+<div class="ttc" id="anamespacepython__ctypes__example_html_a45769a5e86a11190c76125fd80114cf3"><div class="ttname"><a href="namespacepython__ctypes__example.html#a45769a5e86a11190c76125fd80114cf3">python_ctypes_example.root_hash</a></div><div class="ttdeci">bytes root_hash</div><div class="ttdef"><b>Definition</b> <a href="python__ctypes__example_8py_source.html#l00248">python_ctypes_example.py:248</a></div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md73"></a>
+🏗️ Architecture Overview</h1>
+<p>The library consists of several key components:</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+Core Data Structures</h2>
+<ul>
+<li><b>merkle_tree_t</b>: The main tree structure with thread-safe operations</li>
+<li><b>merkle_node_t</b>: Individual nodes containing hashes and children</li>
+<li><b>merkle_proof_t</b>: Cryptographic proofs for data integrity verification</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md75"></a>
+Key Modules</h2>
+<ul>
+<li><b>Merkle.h</b>: Main public API for tree operations</li>
+<li><b>MerkleQueue.h</b>: Internal queue for efficient tree construction</li>
+<li><b>locking.h</b>: Cross-platform read-write locking primitives</li>
+<li><b>merkle_utils.h</b>: Memory management and utility functions</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+Algorithm Features</h2>
+<ul>
+<li><b>Queue-based Construction</b>: Efficient bottom-up tree building</li>
+<li><b>SHA-256 Hashing</b>: Cryptographically secure hash function</li>
+<li><b>Proof Generation</b>: Creates merkle proofs for data verification</li>
+<li><b>Memory Safety</b>: Custom allocation tracking with debug support</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md77"></a>
+🔧 Build Requirements</h1>
+<ul>
+<li><b>C11 Compiler</b>: GCC 7+ or Clang 6+</li>
+<li><b>OpenSSL 3.x</b>: For SHA-256 cryptographic operations</li>
+<li><b>CMake 3.10+</b>: For building (optional)</li>
+<li><b>Valgrind</b>: For memory leak detection during testing</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+📋 Testing</h1>
+<p>The library includes comprehensive testing:</p><ul>
+<li><b>100+ Unit Tests</b>: Covering all major functionality</li>
+<li><b>Threading Tests</b>: Concurrent operation validation</li>
+<li><b>Memory Leak Tests</b>: Valgrind integration</li>
+<li><b>Performance Tests</b>: Benchmarking and stress testing</li>
+</ul>
+<p>Run tests with: </p><div class="fragment"><div class="line">cd tests &amp;&amp; ./run_tests.sh --memory</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
+🐍 Language Bindings</h1>
+<p>Python bindings are available using ctypes:</p>
+<div class="fragment"><div class="line"><span class="keyword">from</span> python_ctypes_example <span class="keyword">import</span> build_tree, get_root_hash</div>
+<div class="line"> </div>
+<div class="line"><span class="comment"># Create tree from Python</span></div>
+<div class="line">tree = build_tree([b<span class="stringliteral">&#39;hello&#39;</span>, b<span class="stringliteral">&#39;world&#39;</span>])</div>
+<div class="line">hash_bytes = get_root_hash(tree)</div>
+<div class="line">print(f<span class="stringliteral">&quot;Root hash: {hash_bytes.hex()}&quot;</span>)</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+📖 Further Reading</h1>
+<ul>
+<li><a class="el" href="getting_started.html">Getting Started Guide</a></li>
+<li><a class="el" href="api_overview.html">Complete API Reference</a></li>
+<li><a class="el" href="dir_d28a4824dc47e487b107a5db32ef43c4.html">Code Examples and Tutorials</a></li>
+<li><b>GitHub Repository</b>: <a href="https://github.com/your-repo/merkle-tree">Merkle Tree Implementation</a></li>
+</ul>
+<hr  />
+<p><b>Author</b>: Guy Alster <br  />
+ <b>License</b>: MIT License <br  />
+ <b>Version</b>: 1.0.0 </p>
+</div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>
 </div><!-- contents -->
 </div><!-- doc-content -->

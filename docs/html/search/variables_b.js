@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_0',['value',['../structqueue__node.html#a80962fbbabb256723314bae59b92a38e',1,'queue_node']]]
+  ['queue_5fsize_0',['queue_size',['../structqueue.html#af552679f638df20e34ce9ad862e9aedb',1,'queue']]]
 ];

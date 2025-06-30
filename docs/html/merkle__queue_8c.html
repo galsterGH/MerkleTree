@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Merkle Tree: src/merkle_queue.c File Reference</title>
+<title>Merkle Tree Library: src/merkle_queue.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,8 +26,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Merkle Tree
+   <div id="projectname">Merkle Tree Library<span id="projectnumber">&#160;v1.0</span>
    </div>
+   <div id="projectbrief">A high-performance C implementation of n-ary Merkle trees with SHA-256 hashing</div>
   </td>
  </tr>
  </tbody>
@@ -91,18 +92,26 @@ $(function(){initNavTree('merkle__queue_8c.html','',''); });
   <div class="headertitle"><div class="title">merkle_queue.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Implementation of queue data structure for Merkle tree construction.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="_merkle_queue_8h_source.html">include/MerkleQueue.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_utils_8h_source.html">include/Utils.h</a>&quot;</code><br />
-</div><table class="memberdecls">
+<code>#include &quot;<a class="el" href="MerkleQueue_8h_source.html">MerkleQueue.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="merkle__utils_8h_source.html">merkle_utils.h</a>&quot;</code><br />
+</div>
+<p><a href="merkle__queue_8c_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
+Data Structures</h2></td></tr>
 <tr class="memitem:queue_5Fnode" id="r_queue_5Fnode"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structqueue__node.html">queue_node</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal structure representing a node in the queue.  <a href="structqueue__node.html#details">More...</a><br /></td></tr>
 <tr class="memitem:queue" id="r_queue"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structqueue.html">queue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opaque structure representing a queue.  <a href="structqueue.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ac6afabdc09a49a433ee19d8a9486056d" id="r_ac6afabdc09a49a433ee19d8a9486056d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6afabdc09a49a433ee19d8a9486056d">min</a>(a,  b)</td></tr>
+<tr class="memdesc:ac6afabdc09a49a433ee19d8a9486056d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the minimum of two values.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -110,16 +119,31 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ace4b8430689820f99d62da563e2a01d3" id="r_ace4b8430689820f99d62da563e2a01d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace4b8430689820f99d62da563e2a01d3">init_queue</a> ()</td></tr>
-<tr class="memitem:a5c390dc131889888173c2af1118d7208" id="r_a5c390dc131889888173c2af1118d7208"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5c390dc131889888173c2af1118d7208">free_queue</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, <a class="el" href="_merkle_queue_8h.html#ab373d3684d1087bf21baeba5557e78fa">deallocator</a> dealloc)</td></tr>
-<tr class="memitem:ae22dcc6c351842fb7a083a6a8921fc7c" id="r_ae22dcc6c351842fb7a083a6a8921fc7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae22dcc6c351842fb7a083a6a8921fc7c">push_queue</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, void *data)</td></tr>
-<tr class="memitem:a471019fab3ad24105b1954e36e4ec860" id="r_a471019fab3ad24105b1954e36e4ec860"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a471019fab3ad24105b1954e36e4ec860">pop_queue</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
-<tr class="memitem:a9ef28d8c22291bc7a303af6e5771daff" id="r_a9ef28d8c22291bc7a303af6e5771daff"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ef28d8c22291bc7a303af6e5771daff">front_queue</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
-<tr class="memitem:a0f48bd0eb14ed32f9bb957f8c5359de4" id="r_a0f48bd0eb14ed32f9bb957f8c5359de4"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f48bd0eb14ed32f9bb957f8c5359de4">back_queue</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
-<tr class="memitem:a4712ba746c18f9322b3357400f4d7bfe" id="r_a4712ba746c18f9322b3357400f4d7bfe"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4712ba746c18f9322b3357400f4d7bfe">get_queue_size</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
-<tr class="memitem:af4119e9324811f54a5a0a8608fbceb31" id="r_af4119e9324811f54a5a0a8608fbceb31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4119e9324811f54a5a0a8608fbceb31">deque_n</a> (<a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, size_t *count, void ***result)</td></tr>
+<tr class="memitem:ab08245596422fb06902adda1842e5057" id="r_ab08245596422fb06902adda1842e5057"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab08245596422fb06902adda1842e5057">init_queue</a> (void)</td></tr>
+<tr class="memdesc:ab08245596422fb06902adda1842e5057"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new queue with a sentinel node and returns a pointer to it.  <br /></td></tr>
+<tr class="memitem:a5c390dc131889888173c2af1118d7208" id="r_a5c390dc131889888173c2af1118d7208"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5c390dc131889888173c2af1118d7208">free_queue</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, <a class="el" href="MerkleQueue_8h.html#a10cae467ba75c36632a903fb382e5461">deallocator</a> dealloc)</td></tr>
+<tr class="memdesc:a5c390dc131889888173c2af1118d7208"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all memory associated with the queue, including its nodes and their values.  <br /></td></tr>
+<tr class="memitem:ae22dcc6c351842fb7a083a6a8921fc7c" id="r_ae22dcc6c351842fb7a083a6a8921fc7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae22dcc6c351842fb7a083a6a8921fc7c">push_queue</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, void *data)</td></tr>
+<tr class="memdesc:ae22dcc6c351842fb7a083a6a8921fc7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new element to the end of the queue.  <br /></td></tr>
+<tr class="memitem:a471019fab3ad24105b1954e36e4ec860" id="r_a471019fab3ad24105b1954e36e4ec860"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a471019fab3ad24105b1954e36e4ec860">pop_queue</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
+<tr class="memdesc:a471019fab3ad24105b1954e36e4ec860"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the front element from the queue and returns its value.  <br /></td></tr>
+<tr class="memitem:a9ef28d8c22291bc7a303af6e5771daff" id="r_a9ef28d8c22291bc7a303af6e5771daff"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ef28d8c22291bc7a303af6e5771daff">front_queue</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
+<tr class="memdesc:a9ef28d8c22291bc7a303af6e5771daff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the value of the front element in the queue without removing it.  <br /></td></tr>
+<tr class="memitem:a0f48bd0eb14ed32f9bb957f8c5359de4" id="r_a0f48bd0eb14ed32f9bb957f8c5359de4"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f48bd0eb14ed32f9bb957f8c5359de4">back_queue</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
+<tr class="memdesc:a0f48bd0eb14ed32f9bb957f8c5359de4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the value of the last element in the queue without removing it.  <br /></td></tr>
+<tr class="memitem:a4712ba746c18f9322b3357400f4d7bfe" id="r_a4712ba746c18f9322b3357400f4d7bfe"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4712ba746c18f9322b3357400f4d7bfe">get_queue_size</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q)</td></tr>
+<tr class="memdesc:a4712ba746c18f9322b3357400f4d7bfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current size of the queue.  <br /></td></tr>
+<tr class="memitem:af4119e9324811f54a5a0a8608fbceb31" id="r_af4119e9324811f54a5a0a8608fbceb31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4119e9324811f54a5a0a8608fbceb31">deque_n</a> (<a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *q, size_t *count, void ***result)</td></tr>
+<tr class="memdesc:af4119e9324811f54a5a0a8608fbceb31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes up to n elements from the front of the queue.  <br /></td></tr>
 </table>
-<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Implementation of queue data structure for Merkle tree construction. </p>
+<p>This file contains the implementation of a <a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> data structure specifically designed for use in the Merkle tree construction process. It includes functions for initialization, memory management, and basic <a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> operations. The implementation uses a sentinel node design for efficient queue operations.</p>
+<dl class="section author"><dt>Author</dt><dd>Guy Alster </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>May 24, 2025 </dd></dl>
+
+<p class="definition">Definition in file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+</div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="ac6afabdc09a49a433ee19d8a9486056d" name="ac6afabdc09a49a433ee19d8a9486056d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6afabdc09a49a433ee19d8a9486056d">&#9670;&#160;</a></span>min</h2>
 
@@ -140,6 +164,18 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((a) &lt; (b) ? (a) : (b))</div>
 </div><!-- fragment -->
+<p>Returns the minimum of two values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>First value. </td></tr>
+    <tr><td class="paramname">b</td><td>Second value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The smaller of the two values. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00025">25</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
@@ -167,11 +203,24 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void * back_queue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Returns the value of the last element in the queue without removing it. </p>
+<p>Returns the value of the last element without removing it.</p>
+<p>Returns the data stored in the tail node. If the queue is empty, tail points to the sentinel node and we return NULL.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the rear element's data, or NULL if queue is empty/NULL. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00215">215</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -182,9 +231,9 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a> deque_n </td>
+          <td class="memname"><a class="el" href="MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a> deque_n </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -199,6 +248,23 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Removes up to n elements from the front of the queue. </p>
+<p>Dequeues the minimum of the requested count and available elements. Allocates an array to hold the pointers and populates it by calling <a class="el" href="#a471019fab3ad24105b1954e36e4ec860" title="Removes the front element from the queue and returns its value.">pop_queue()</a> repeatedly. Updates the count parameter with the actual number of elements returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+    <tr><td class="paramname">count</td><td>Pointer to requested count (input) and actual count (output). </td></tr>
+    <tr><td class="paramname">result</td><td>Pointer to store the allocated array of element pointers. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>QUEUE_OK on success, error code on failure.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Caller is responsible for freeing the returned array and managing the element data according to their ownership model. </dd>
+<dd>
+If memory allocation fails, *count is set to 0. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00263">263</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
 <a id="a5c390dc131889888173c2af1118d7208" name="a5c390dc131889888173c2af1118d7208"></a>
@@ -210,15 +276,28 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void free_queue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#ab373d3684d1087bf21baeba5557e78fa">deallocator</a></td>          <td class="paramname"><span class="paramname"><em>dealloc</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#a10cae467ba75c36632a903fb382e5461">deallocator</a></td>          <td class="paramname"><span class="paramname"><em>dealloc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Frees all memory associated with the queue, including its nodes and their values. </p>
+<p>Frees all memory associated with the queue, including its elements.</p>
+<p>Iterates through all nodes in the queue (excluding the sentinel) and frees them. If a deallocator function is provided, it's called for each element's data. Finally frees the sentinel node and queue structure.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue to free. Safe to pass NULL. </td></tr>
+    <tr><td class="paramname">dealloc</td><td>Optional deallocator function for element data. Can be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00093">93</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -231,11 +310,24 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void * front_queue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Returns the value of the front element in the queue without removing it. </p>
+<p>Returns the value of the front element without removing it.</p>
+<p>Peeks at the first actual data element (head-&gt;next) without modifying the queue structure.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the front element's data, or NULL if queue is empty/NULL. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00193">193</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -248,28 +340,49 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">size_t get_queue_size </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Returns the current size of the queue. </p>
+<p>Returns the current number of elements in the queue.</p>
+<p>Returns the cached size value that's maintained during push/pop operations. This provides O(1) size queries.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of elements in the queue, or 0 if queue is NULL. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00237">237</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
+
 </div>
 </div>
-<a id="ace4b8430689820f99d62da563e2a01d3" name="ace4b8430689820f99d62da563e2a01d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace4b8430689820f99d62da563e2a01d3">&#9670;&#160;</a></span>init_queue()</h2>
+<a id="ab08245596422fb06902adda1842e5057" name="ab08245596422fb06902adda1842e5057"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab08245596422fb06902adda1842e5057">&#9670;&#160;</a></span>init_queue()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> * init_queue </td>
+          <td class="memname"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> * init_queue </td>
           <td>(</td>
           <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes a new queue with a sentinel node and returns a pointer to it. </p>
+<p>Initializes a new queue and returns a pointer to it.</p>
+<p>Creates a new queue using the sentinel node pattern for efficient operations. The sentinel node simplifies insertion and deletion logic by eliminating special cases for empty queues.</p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the newly created queue, or NULL if memory allocation fails.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The queue starts empty with head and tail both pointing to the sentinel node. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00060">60</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -282,11 +395,23 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void * pop_queue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Removes the front element from the queue and returns its value. </p>
+<p>Removes the first actual data node (head-&gt;next) and returns its value. Updates head-&gt;next to point to the following node. If this was the last element, resets tail to point back to the sentinel node.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the data of the removed element, or NULL if queue is empty/NULL. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00162">162</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>
@@ -297,9 +422,9 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_merkle_queue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a> push_queue </td>
+          <td class="memname"><a class="el" href="MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483da">queue_result_t</a> push_queue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="_merkle_queue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
+          <td class="paramtype"><a class="el" href="MerkleQueue_8h.html#aa8acf648f3b0c69d7e132fcc61dc58c7">queue_t</a> *</td>          <td class="paramname"><span class="paramname"><em>q</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -308,6 +433,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Adds a new element to the end of the queue. </p>
+<p>Creates a new node and links it after the current tail. Updates the tail pointer and increments the queue size.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>Pointer to the queue. </td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the data to store. Can be NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>QUEUE_OK on success, error code on failure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="merkle__queue_8c_source.html#l00129">129</a> of file <a class="el" href="merkle__queue_8c_source.html">merkle_queue.c</a>.</p>
 
 </div>
 </div>

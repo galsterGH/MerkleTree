@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['merkle_5ferror_5ft_0',['merkle_error_t',['../_merkle_8h.html#ac568a5eee061a37d53770a559a4f1bb3',1,'Merkle.h']]]
+  ['queue_5fresult_5ft_0',['queue_result_t',['../MerkleQueue_8h.html#ae2e751410d313a6da09cc78f053483da',1,'MerkleQueue.h']]]
 ];

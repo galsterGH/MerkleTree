@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['free_5fall_0',['FREE_ALL',['../merkle__tree_8c.html#aaec5e7a82cc2900dca5c861addf57316',1,'merkle_tree.c']]]
+  ['catch_0',['CATCH',['../merkle__utils_8h.html#a7b230a6f3c9c3e809c2c1af2d27223ec',1,'merkle_utils.h']]]
 ];

@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['claude_20md_0',['CLAUDE.md',['../md_CLAUDE.html',1,'']]],
+  ['code_20development_1',['VS Code Development',['../md_README.html#autotoc_md90',1,'']]],
+  ['code_20style_2',['Code Style',['../md_CLAUDE.html#autotoc_md8',1,'']]],
+  ['codes_3',['Codes',['../api_overview.html#error-codes',1,'⚠️ Error Codes'],['../md_README.html#autotoc_md100',1,'Error Codes']]],
+  ['commands_4',['Build and Test Commands',['../md_CLAUDE.html#autotoc_md1',1,'']]],
+  ['common_20issues_5',['Common Issues',['../getting_started.html#autotoc_md68',1,'']]],
+  ['common_20patterns_6',['🔄 Common Patterns',['../getting_started.html#autotoc_md62',1,'']]],
+  ['common_20pitfalls_7',['Common Pitfalls',['../md_CLAUDE.html#autotoc_md9',1,'']]],
+  ['compile_20time_20options_8',['Compile-Time Options',['../md_README.html#autotoc_md103',1,'']]],
+  ['complexity_9',['Algorithm Complexity',['../api_overview.html#autotoc_md41',1,'']]],
+  ['configuration_10',['Configuration',['../md_README.html#autotoc_md102',1,'🔧 Configuration'],['../md_README.html#autotoc_md93',1,'Advanced Configuration'],['../api_overview.html#autotoc_md47',1,'Build Configuration']]],
+  ['considerations_11',['⚡ Performance Considerations',['../api_overview.html#performance-considerations',1,'']]],
+  ['constants_12',['🔗 Constants',['../api_overview.html#autotoc_md45',1,'']]],
+  ['construction_20algorithm_13',['Tree Construction Algorithm',['../md_CLAUDE.html#autotoc_md14',1,'']]],
+  ['contents_14',['📋 Table of Contents',['../api_overview.html#autotoc_md20',1,'']]],
+  ['contributing_15',['🤝 Contributing',['../md_README.html#autotoc_md105',1,'']]],
+  ['core_20data_20structures_16',['Core Data Structures',['../index.html#autotoc_md74',1,'']]],
+  ['core_20functions_17',['🔧 Core Functions',['../api_overview.html#core-functions',1,'']]],
+  ['core_20structure_20src_18',['Core Structure (src/)',['../md_CLAUDE.html#autotoc_md11',1,'']]],
+  ['create_20your_20first_20tree_19',['2. Create Your First Tree',['../getting_started.html#autotoc_md59',1,'']]],
+  ['create_5fmerkle_5ftree_20',['create_merkle_tree()',['../api_overview.html#autotoc_md22',1,'']]],
+  ['creation_20and_20destruction_21',['Tree Creation and Destruction',['../api_overview.html#autotoc_md21',1,'']]],
+  ['custom_20memory_20management_22',['Custom Memory Management',['../api_overview.html#autotoc_md37',1,'']]]
+];
