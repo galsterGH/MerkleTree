@@ -144,6 +144,20 @@ if (!tree) {
     return -1;
 }
 ```
+## 🐍 Python Integration
+
+Build the shared library and use it from Python with `ctypes`. First build `libmerkle.so`:
+
+```bash
+make
+```
+
+Then run the example script:
+
+```bash
+python examples/python_ctypes_example.py
+```
+
 
 ## 🧪 Testing
 
